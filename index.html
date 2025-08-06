@@ -17,6 +17,7 @@
             background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
             min-height: 100vh;
             color: #1f2937;
+            font-size: 14px;
         }
 
         .header {
@@ -26,9 +27,9 @@
         }
 
         .header-content {
-            max-width: 1400px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 1.5rem;
+            padding: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
@@ -39,11 +40,12 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: space-between;
+                padding: 1.5rem;
             }
         }
 
         .header-title h1 {
-            font-size: 1.875rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #111827;
             margin-bottom: 0.25rem;
@@ -51,6 +53,7 @@
 
         .header-title p {
             color: #6b7280;
+            font-size: 0.875rem;
         }
 
         .controls {
@@ -101,6 +104,7 @@
             align-items: center;
             gap: 0.5rem;
             white-space: nowrap;
+            font-size: 0.875rem;
         }
 
         .items-per-page select {
@@ -112,9 +116,9 @@
         }
 
         .main-content {
-            max-width: 1400px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 2rem 1rem;
+            padding: 1rem;
         }
 
         .success-badge {
@@ -131,28 +135,28 @@
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .stat-card {
             background: white;
-            padding: 1.5rem;
+            padding: 1rem;
             border-radius: 0.75rem;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .stat-icon {
-            width: 2rem;
-            height: 2rem;
+            width: 1.5rem;
+            height: 1.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1rem;
         }
 
         .stat-icon.contracts { color: #3b82f6; }
@@ -160,92 +164,133 @@
         .stat-icon.suppliers { color: #8b5cf6; }
 
         .stat-info h3 {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 500;
             color: #6b7280;
             margin-bottom: 0.25rem;
         }
 
         .stat-info p {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: #111827;
         }
 
-        /* Layout da tabela horizontal */
+        /* Layout da tabela otimizado */
         .contracts-table {
             background: white;
             border-radius: 0.75rem;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .table-container {
             overflow-x: auto;
+            max-width: 100vw;
         }
 
         .contracts-table table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1200px;
+            table-layout: fixed;
+            min-width: 100%;
         }
 
         .contracts-table th {
             background: #f8fafc;
-            padding: 1rem;
+            padding: 0.75rem 0.5rem;
             text-align: left;
             font-weight: 600;
             color: #374151;
             border-bottom: 1px solid #e5e7eb;
-            white-space: nowrap;
+            font-size: 0.75rem;
+            line-height: 1.2;
+            vertical-align: top;
         }
 
         .contracts-table td {
-            padding: 1rem;
+            padding: 0.75rem 0.5rem;
             border-bottom: 1px solid #f3f4f6;
             vertical-align: top;
+            font-size: 0.75rem;
+            line-height: 1.3;
         }
 
         .contracts-table tr:hover {
             background: #f9fafb;
         }
 
+        /* Larguras específicas das colunas */
+        .col-contract { width: 8%; }
+        .col-purchase { width: 8%; }
+        .col-modality { width: 7%; }
+        .col-category { width: 8%; }
+        .col-subcategory { width: 8%; }
+        .col-cnpj { width: 9%; }
+        .col-supplier { width: 15%; }
+        .col-process { width: 8%; }
+        .col-object { width: 20%; }
+        .col-start-date { width: 6%; }
+        .col-end-date { width: 6%; }
+        .col-value { width: 7%; }
+
         .contract-number {
             font-weight: 600;
             color: #1f2937;
+            word-break: break-word;
         }
 
         .supplier-name {
             font-weight: 500;
             color: #1f2937;
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
 
         .cnpj {
             font-family: monospace;
-            font-size: 0.875rem;
+            font-size: 0.7rem;
             color: #6b7280;
+            word-break: break-all;
         }
 
         .object-text {
-            max-width: 300px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            line-height: 1.4;
+            max-height: 4.2em;
             overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .object-text.expanded {
+            max-height: none;
+            -webkit-line-clamp: unset;
+        }
+
+        .expand-btn {
+            color: #3b82f6;
+            cursor: pointer;
+            font-size: 0.7rem;
+            text-decoration: underline;
+            margin-top: 0.25rem;
+            display: block;
         }
 
         .process-number {
             font-family: monospace;
-            font-size: 0.875rem;
+            font-size: 0.7rem;
             color: #6b7280;
+            word-break: break-word;
         }
 
         .date-cell {
-            font-size: 0.875rem;
+            font-size: 0.7rem;
             color: #374151;
             white-space: nowrap;
         }
@@ -254,17 +299,26 @@
             font-weight: 600;
             color: #10b981;
             text-align: right;
-            white-space: nowrap;
+            font-size: 0.7rem;
+            word-break: break-word;
         }
 
         .badge {
             background: #f3f4f6;
             color: #374151;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.75rem;
+            padding: 0.25rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.65rem;
             font-weight: 500;
-            white-space: nowrap;
+            display: inline-block;
+            word-wrap: break-word;
+            line-height: 1.2;
+        }
+
+        .category-text {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
 
         .pagination {
@@ -272,19 +326,19 @@
             justify-content: center;
             align-items: center;
             gap: 0.5rem;
-            margin-top: 2rem;
+            margin-top: 1.5rem;
             flex-wrap: wrap;
         }
 
         .pagination button {
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border: 1px solid #d1d5db;
             background: white;
             color: #374151;
             border-radius: 0.375rem;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
         }
 
         .pagination button:hover:not(:disabled) {
@@ -304,7 +358,7 @@
         }
 
         .pagination-info {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             color: #6b7280;
             margin: 0 1rem;
             text-align: center;
@@ -404,19 +458,54 @@
             color: #6b7280;
         }
 
-        @media (max-width: 768px) {
+        /* Responsividade melhorada */
+        @media (max-width: 1200px) {
             .contracts-table th,
             .contracts-table td {
-                padding: 0.75rem 0.5rem;
-                font-size: 0.875rem;
+                padding: 0.5rem 0.25rem;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0.5rem;
             }
             
-            .supplier-name {
-                max-width: 150px;
+            .contracts-table th,
+            .contracts-table td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.65rem;
             }
             
-            .object-text {
-                max-width: 200px;
+            .stat-card {
+                padding: 0.75rem;
+            }
+            
+            .stat-info p {
+                font-size: 1rem;
+            }
+        }
+
+        /* Melhorias para impressão */
+        @media print {
+            body {
+                background: white;
+                font-size: 10px;
+            }
+            
+            .header, .pagination, .success-badge {
+                display: none;
+            }
+            
+            .contracts-table {
+                box-shadow: none;
+            }
+            
+            .contracts-table th,
+            .contracts-table td {
+                font-size: 8px;
+                padding: 0.25rem;
             }
         }
     </style>
@@ -439,7 +528,7 @@
                     >
                 </div>
                 <div class="items-per-page">
-                    <label for="itemsPerPage">Itens por página:</label>
+                    <label for="itemsPerPage">Itens:</label>
                     <select id="itemsPerPage" onchange="changeItemsPerPage()">
                         <option value="10">10</option>
                         <option value="25" selected>25</option>
@@ -504,18 +593,18 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Número do Contrato</th>
-                            <th>Número da Compra</th>
-                            <th>Modalidade</th>
-                            <th>Categoria</th>
-                            <th>Subcategoria</th>
-                            <th>CNPJ do Fornecedor</th>
-                            <th>Fornecedor</th>
-                            <th>Número do PA SEI</th>
-                            <th>Objeto</th>
-                            <th>Vigência Inicial</th>
-                            <th>Vigência Final</th>
-                            <th>Valor Atual do Contrato</th>
+                            <th class="col-contract">Número do Contrato</th>
+                            <th class="col-purchase">Número da Compra</th>
+                            <th class="col-modality">Modalidade</th>
+                            <th class="col-category">Categoria</th>
+                            <th class="col-subcategory">Subcategoria</th>
+                            <th class="col-cnpj">CNPJ do Fornecedor</th>
+                            <th class="col-supplier">Fornecedor</th>
+                            <th class="col-process">Número do PA SEI</th>
+                            <th class="col-object">Objeto</th>
+                            <th class="col-start-date">Vigência Inicial</th>
+                            <th class="col-end-date">Vigência Final</th>
+                            <th class="col-value">Valor Atual do Contrato</th>
                         </tr>
                     </thead>
                     <tbody id="contractsTableBody">
@@ -599,9 +688,17 @@
             return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
         }
 
-        function truncateText(text, maxLength = 80) {
+        function createExpandableText(text, maxLength = 150) {
             if (!text) return '-';
-            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+            
+            if (text.length <= maxLength) {
+                return `<span class="object-text">${text}</span>`;
+            }
+            
+            const id = 'text_' + Math.random().toString(36).substr(2, 9);
+            return `
+                <span class="object-text" id="${id}">${text}</span>
+            `;
         }
 
         // Carregar TODOS os contratos da API
@@ -697,12 +794,12 @@
                     <td><span class="contract-number">${contract.numeroContrato || '-'}</span></td>
                     <td>${contract.numeroCompra || '-'}</td>
                     <td><span class="badge">${contract.nomeModalidadeCompra || '-'}</span></td>
-                    <td>${contract.nomeCategoria || '-'}</td>
-                    <td>${contract.nomeSubcategoria || '-'}</td>
+                    <td><span class="category-text">${contract.nomeCategoria || '-'}</span></td>
+                    <td><span class="category-text">${contract.nomeSubcategoria || '-'}</span></td>
                     <td><span class="cnpj">${formatCNPJ(contract.niFornecedor)}</span></td>
-                    <td><span class="supplier-name" title="${contract.nomeRazaoSocialFornecedor || '-'}">${contract.nomeRazaoSocialFornecedor || '-'}</span></td>
+                    <td><span class="supplier-name">${contract.nomeRazaoSocialFornecedor || '-'}</span></td>
                     <td><span class="process-number">${contract.processo || '-'}</span></td>
-                    <td><span class="object-text" title="${contract.objeto || '-'}">${truncateText(contract.objeto)}</span></td>
+                    <td>${createExpandableText(contract.objeto)}</td>
                     <td><span class="date-cell">${formatDate(contract.dataVigenciaInicial)}</span></td>
                     <td><span class="date-cell">${formatDate(contract.dataVigenciaFinal)}</span></td>
                     <td><span class="value-cell">${formatCurrency(contract.valorGlobal)}</span></td>
