@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contratos Governamentais - NUGARCSYS</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+            min-height: 100vh;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header-content {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .header-content {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1.5rem;
+            }
+        }
+
+        .header-title h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-title p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        @media (min-width: 768px) {
+            .controls {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .items-per-page {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+            font-size: 0.875rem;
+        }
+
+        .items-per-page select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            outline: none;
+        }
+
+        .main-content {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .success-badge {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .stat-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .stat-icon.contracts { color: #3b82f6; }
+        .stat-icon.value { color: #10b981; }
+        .stat-icon.suppliers { color: #8b5cf6; }
+
+        .stat-info {
+            text-align: center; /* Centraliza o texto dentro do card de estatística */
+            flex-grow: 1; /* Permite que o info ocupe o espaço disponível */
+        }
+
+        .stat-info h3 {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info p {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* Layout da tabela otimizado */
+        .contracts-table {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-width: 100vw;
+        }
+
+        .contracts-table table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed; /* Mantém as larguras fixas */
+            min-width: 1200px; /* Largura mínima para evitar quebra excessiva */
+        }
+
+        .contracts-table th {
+            background: #f8fafc;
+            padding: 0.75rem 0.5rem;
+            text-align: center; /* Centraliza o texto do cabeçalho */
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+            line-height: 1.2;
+            vertical-align: top;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .contracts-table th .sort-icon {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.6em;
+            color: #9ca3af;
+        }
+
+        .contracts-table th.sorted .sort-icon {
+            color: #3b82f6;
+        }
+
+        .contracts-table td {
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+            font-size: 0.75rem;
+            line-height: 1.3;
+            text-align: center; /* Centraliza o texto das células */
+        }
+
+        .contracts-table tr:hover {
+            background: #f9fafb;
+        }
+
+        /* Larguras específicas das colunas */
+        .col-contract { width: 7%; }
+        .col-purchase { width: 7%; }
+        .col-modality { width: 7%; }
+        .col-category { width: 8%; }
+        .col-unit { width: 10%; }
+        .col-cnpj { width: 9%; }
+        .col-supplier { width: 13%; }
+        .col-process { width: 8%; }
+        .col-object { width: 25%; } /* Aumentado para acomodar texto completo */
+        .col-start-date { width: 6%; }
+        .col-end-date { width: 6%; }
+        .col-value { width: 7%; }
+
+        .contract-number, .supplier-name, .cnpj, .process-number, .date-cell, .badge, .category-text {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        .object-text {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            line-height: 1.4;
+        }
+
+        .cnpj, .process-number, .date-cell {
+            font-size: 0.7rem; /* Mantido para compactar */
+        }
+        
+        .value-cell {
+            font-weight: 600;
+            color: #10b981;
+            font-size: 0.7rem;
+            word-break: break-word;
+            text-align: center; /* Centraliza o valor */
+        }
+
+        .badge {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.25rem 0.375rem;
+            border-radius: 0.25rem;
+            font-size: 0.65rem;
+            font-weight: 500;
+            display: inline-block;
+            word-wrap: break-word;
+            line-height: 1.2;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .pagination-info {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin: 0 1rem;
+            text-align: center;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            gap: 1rem;
+        }
+
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .error i {
+            font-size: 3rem;
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+
+        .error h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .error p {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .error button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .error button:hover {
+            background: #2563eb;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+
+        .no-results h3 {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-results p {
+            color: #6b7280;
+        }
+
+        /* Advanced Filters and Export Button */
+        .filter-export-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem; /* Adicionado para espaçamento abaixo */
+            padding: 1rem;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 120px;
+        }
+
+        .filter-group label {
+            font-size: 0.75rem;
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input[type="number"] {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .filter-group select:focus,
+        .filter-group input[type="number"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .filter-group input[type="number"] {
+            width: 100px; /* Ajuste para campos de valor */
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto; /* Empurra os botões para a direita */
+        }
+
+        .filter-buttons button,
+        .export-button {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-buttons button.apply {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .filter-buttons button.apply:hover {
+            background: #2563eb;
+        }
+
+        .filter-buttons button.clear {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .filter-buttons button.clear:hover {
+            background: #d1d5db;
+        }
+
+        .export-button {
+            background: #10b981;
+            color: white;
+        }
+
+        .export-button:hover {
+            background: #059669;
+        }
+
+        /* Responsividade melhorada */
+        @media (max-width: 1200px) {
+            .contracts-table th,
+            .contracts-table td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 0.5rem;
+            }
+            
+            .contracts-table th,
+            .contracts-table td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.65rem;
+            }
+            
+            .stat-card {
+                padding: 0.75rem;
+            }
+            
+            .stat-info p {
+                font-size: 1rem;
+            }
+
+            .filter-export-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-buttons {
+                margin-left: 0;
+                justify-content: stretch;
+            }
+
+            .filter-buttons button, .export-button {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+
+        /* Melhorias para impressão */
+        @media print {
+            body {
+                background: white;
+                font-size: 10px;
+            }
+            
+            .header, .pagination, .success-badge, .filter-export-controls {
+                display: none;
+            }
+            
+            .contracts-table {
+                box-shadow: none;
+            }
+            
+            .contracts-table th,
+            .contracts-table td {
+                font-size: 8px;
+                padding: 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>Contratos Governamentais</h1>
+                <p>Consulta de contratos públicos - Dados Abertos</p>
+            </div>
+            <div class="controls">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        placeholder="Buscar por fornecedor, contrato ou objeto..."
+                        id="searchInput"
+                    >
+                </div>
+                <div class="items-per-page">
+                    <label for="itemsPerPage">Itens:</label>
+                    <select id="itemsPerPage" onchange="changeItemsPerPage()">
+                        <option value="10">10</option>
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="success-badge">
+            <i class="fas fa-check-circle"></i>
+            <span id="statusText">Conectado à API via Vercel - Carregando todos os contratos...</span>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon contracts">
+                    <i class="fas fa-file-contract"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total de Contratos</h3>
+                    <p id="totalContracts">-</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon value">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Valor Total</h3>
+                    <p id="totalValue">-</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon suppliers">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Fornecedores Únicos</h3>
+                    <p id="uniqueSuppliers">-</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Filters and Export -->
+        <div class="filter-export-controls">
+            <div class="filter-group">
+                <label for="modalityFilter">Modalidade:</label>
+                <select id="modalityFilter">
+                    <option value="all">Todas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">Categoria:</label>
+                <select id="categoryFilter">
+                    <option value="all">Todas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="minValueFilter">Valor Mínimo:</label>
+                <input type="number" id="minValueFilter" placeholder="R$ 0">
+            </div>
+            <div class="filter-group">
+                <label for="maxValueFilter">Valor Máximo:</label>
+                <input type="number" id="maxValueFilter" placeholder="R$ 99999999">
+            </div>
+            <div class="filter-buttons">
+                <button class="apply" onclick="applyFilters()">
+                    <i class="fas fa-filter"></i> Aplicar Filtros
+                </button>
+                <button class="clear" onclick="clearFilters()">
+                    <i class="fas fa-times"></i> Limpar Filtros
+                </button>
+            </div>
+            <button class="export-button" onclick="exportToCsv()">
+                <i class="fas fa-file-csv"></i> Exportar CSV (Página Atual)
+            </button>
+        </div>
+
+        <div id="loadingContainer" class="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Carregando todos os contratos da API...</div>
+        </div>
+
+        <div id="errorContainer" class="error" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Erro ao carregar dados</h3>
+            <p id="errorMessage">Ocorreu um erro ao buscar os dados da API.</p>
+            <button onclick="loadAllContracts()">Tentar novamente</button>
+        </div>
+
+        <div id="contractsContainer" class="contracts-table" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="col-contract" data-sort-key="numeroContrato">Número do Contrato <span class="sort-icon"></span></th>
+                            <th class="col-purchase" data-sort-key="numeroCompra">Número da Compra <span class="sort-icon"></span></th>
+                            <th class="col-modality" data-sort-key="nomeModalidadeCompra">Modalidade <span class="sort-icon"></span></th>
+                            <th class="col-category" data-sort-key="nomeCategoria">Categoria <span class="sort-icon"></span></th>
+                            <th class="col-unit" data-sort-key="unidadesRequisitantes">Unidade Requisitante <span class="sort-icon"></span></th>
+                            <th class="col-cnpj" data-sort-key="niFornecedor">CNPJ do Fornecedor <span class="sort-icon"></span></th>
+                            <th class="col-supplier" data-sort-key="nomeRazaoSocialFornecedor">Fornecedor <span class="sort-icon"></span></th>
+                            <th class="col-process" data-sort-key="processo">Número do PA SEI <span class="sort-icon"></span></th>
+                            <th class="col-object" data-sort-key="objeto">Objeto <span class="sort-icon"></span></th>
+                            <th class="col-start-date" data-sort-key="dataVigenciaInicial">Vigência Inicial <span class="sort-icon"></span></th>
+                            <th class="col-end-date" data-sort-key="dataVigenciaFinal">Vigência Final <span class="sort-icon"></span></th>
+                            <th class="col-value" data-sort-key="valorGlobal">Valor Atual do Contrato <span class="sort-icon"></span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="contractsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="noResultsContainer" class="no-results" style="display: none;">
+            <i class="fas fa-search"></i>
+            <h3>Nenhum contrato encontrado</h3>
+            <p>Tente ajustar os filtros de busca.</p>
+        </div>
+
+        <div id="paginationContainer" class="pagination" style="display: none;">
+            <button id="firstButton" onclick="goToPage(1)">
+                <i class="fas fa-angle-double-left"></i> Primeira
+            </button>
+            <button id="prevButton" onclick="changePage(-1)">
+                <i class="fas fa-chevron-left"></i> Anterior
+            </button>
+            <div id="pageNumbers"></div>
+            <button id="nextButton" onclick="changePage(1)">
+                Próxima <i class="fas fa-chevron-right"></i>
+            </button>
+            <button id="lastButton" onclick="goToPage(totalPages)">
+                Última <i class="fas fa-angle-double-right"></i>
+            </button>
+        </div>
+
+        <div class="pagination-info" id="paginationInfo" style="display: none; text-align: center; margin-top: 1rem;">
+            Mostrando <span id="showingFrom">1</span> a <span id="showingTo">25</span> de <span id="totalItems">0</span> contratos
+        </div>
+    </main>
+
+    <script>
+        let allContracts = [];
+        let filteredAndSortedContracts = [];
+        let currentPage = 1;
+        let itemsPerPage = 25;
+        let totalPages = 0;
+        let searchTerm = '';
+        let currentSortColumn = null;
+        let currentSortDirection = 'asc'; // 'asc' or 'desc'
+
+        // Elementos DOM
+        const searchInput = document.getElementById('searchInput');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const errorContainer = document.getElementById('errorContainer');
+        const contractsContainer = document.getElementById('contractsContainer');
+        const contractsTableBody = document.getElementById('contractsTableBody');
+        const noResultsContainer = document.getElementById('noResultsContainer');
+        const paginationContainer = document.getElementById('paginationContainer');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const statusText = document.getElementById('statusText');
+        const totalContractsEl = document.getElementById('totalContracts');
+        const totalValueEl = document.getElementById('totalValue');
+        const uniqueSuppliersEl = document.getElementById('uniqueSuppliers');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Filter elements
+        const modalityFilterSelect = document.getElementById('modalityFilter');
+        const categoryFilterSelect = document.getElementById('categoryFilter');
+        const minValueFilterInput = document.getElementById('minValueFilter');
+        const maxValueFilterInput = document.getElementById('maxValueFilter');
+        const itemsPerPageSelect = document.getElementById('itemsPerPage');
+
+        // Utility Functions
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value || 0);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            try {
+                return new Date(dateString).toLocaleDateString('pt-BR');
+            } catch {
+                return dateString; // Fallback for invalid date strings
+            }
+        }
+
+        function formatCNPJ(cnpj) {
+            if (!cnpj) return '-';
+            return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+        }
+
+        // Carregar TODOS os contratos da API
+        async function loadAllContracts() {
+            try {
+                showLoading();
+                statusText.textContent = 'Conectado à API via Vercel - Carregando todos os contratos...';
+                
+                let allData = [];
+                let page = 1;
+                let hasMoreData = true;
+
+                // Loop para buscar todas as páginas
+                while (hasMoreData) {
+                    const response = await fetch(
+                        `https://nugarcsis.vercel.app/api/contratos?pagina=${page}`,
+                        {
+                            headers: {
+                                'Accept': 'application/json',
+                            }
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(`Erro HTTP: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    const contracts = Array.isArray(data) ? data : [];
+                    
+                    if (contracts.length === 0) {
+                        hasMoreData = false;
+                    } else {
+                        allData = [...allData, ...contracts];
+                        page++;
+                        
+                        // Atualizar status
+                        statusText.textContent = `Carregando contratos... (${allData.length} encontrados)`;
+                    }
+                }
+                
+                allContracts = allData;
+                populateFilterOptions(); // Populate filters after loading all data
+                applyFiltersAndSort(); // Apply initial filters and sort
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Erro ao carregar contratos:', error);
+                showError(error.message);
+            }
+        }
+
+        // Populate filter dropdowns
+        function populateFilterOptions() {
+            const modalities = new Set(allContracts.map(c => c.nomeModalidadeCompra).filter(Boolean));
+            modalityFilterSelect.innerHTML = '<option value="all">Todas</option>' + 
+                Array.from(modalities).sort().map(m => `<option value="${m}">${m}</option>`).join('');
+
+            const categories = new Set(allContracts.map(c => c.nomeCategoria).filter(Boolean));
+            categoryFilterSelect.innerHTML = '<option value="all">Todas</option>' +
+                Array.from(categories).sort().map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        // Apply all filters and sorting
+        function applyFiltersAndSort() {
+            let tempFiltered = [...allContracts];
+
+            // Search term filter
+            if (searchTerm) {
+                tempFiltered = tempFiltered.filter(contract => 
+                    (contract.nomeRazaoSocialFornecedor || '').toLowerCase().includes(searchTerm) ||
+                    (contract.numeroContrato || '').toLowerCase().includes(searchTerm) ||
+                    (contract.objeto || '').toLowerCase().includes(searchTerm) ||
+                    (contract.numeroCompra || '').toLowerCase().includes(searchTerm) ||
+                    (contract.processo || '').toLowerCase().includes(searchTerm) ||
+                    (contract.unidadesRequisitantes || '').toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Modality filter
+            const selectedModality = modalityFilterSelect.value;
+            if (selectedModality !== 'all') {
+                tempFiltered = tempFiltered.filter(contract => contract.nomeModalidadeCompra === selectedModality);
+            }
+
+            // Category filter
+            const selectedCategory = categoryFilterSelect.value;
+            if (selectedCategory !== 'all') {
+                tempFiltered = tempFiltered.filter(contract => contract.nomeCategoria === selectedCategory);
+            }
+
+            // Value range filter
+            const minValue = parseFloat(minValueFilterInput.value);
+            const maxValue = parseFloat(maxValueFilterInput.value);
+
+            if (!isNaN(minValue)) {
+                tempFiltered = tempFiltered.filter(contract => (contract.valorGlobal || 0) >= minValue);
+            }
+            if (!isNaN(maxValue)) {
+                tempFiltered = tempFiltered.filter(contract => (contract.valorGlobal || 0) <= maxValue);
+            }
+
+            // Apply sorting
+            if (currentSortColumn) {
+                tempFiltered.sort((a, b) => {
+                    const valA = a[currentSortColumn];
+                    const valB = b[currentSortColumn];
+
+                    if (typeof valA === 'string' && typeof valB === 'string') {
+                        return currentSortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                    }
+                    if (currentSortColumn.includes('dataVigencia')) {
+                        const dateA = new Date(valA).getTime();
+                        const dateB = new Date(valB).getTime();
+                        return currentSortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+                    }
+                    // For numbers (like valorGlobal)
+                    const numA = parseFloat(valA) || 0;
+                    const numB = parseFloat(valB) || 0;
+                    return currentSortDirection === 'asc' ? numA - numB : numB - numA;
+                });
+            }
+
+            filteredAndSortedContracts = tempFiltered;
+            totalPages = Math.ceil(filteredAndSortedContracts.length / itemsPerPage);
+            currentPage = 1; // Reset to first page on filter/sort change
+            renderContracts();
+            updatePagination();
+            updateStats();
+            updateSortIcons();
+        }
+
+        // Handlers for UI interactions
+        function handleSort(columnKey) {
+            if (currentSortColumn === columnKey) {
+                currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortColumn = columnKey;
+                currentSortDirection = 'asc';
+            }
+            applyFiltersAndSort(); // Re-apply filters and sort
+        }
+
+        function applyFilters() {
+            applyFiltersAndSort();
+        }
+
+        function clearFilters() {
+            modalityFilterSelect.value = 'all';
+            categoryFilterSelect.value = 'all';
+            minValueFilterInput.value = '';
+            maxValueFilterInput.value = '';
+            applyFiltersAndSort(); // Re-apply filters with cleared values
+        }
+
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            if (newPage >= 1 && newPage <= totalPages) {
+                goToPage(newPage);
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderContracts();
+            updatePagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function changeItemsPerPage() {
+            itemsPerPage = parseInt(itemsPerPageSelect.value);
+            applyFiltersAndSort(); // Re-apply filters and sort
+        }
+
+        // Update sort icons in table headers
+        function updateSortIcons() {
+            document.querySelectorAll('.contracts-table th').forEach(header => {
+                const sortIcon = header.querySelector('.sort-icon');
+                if (sortIcon) {
+                    sortIcon.innerHTML = ''; // Clear previous icon
+                }
+            });
+
+            if (currentSortColumn) {
+                const activeHeader = document.querySelector(`.contracts-table th[data-sort-key="${currentSortColumn}"]`);
+                if (activeHeader) {
+                    const sortIcon = activeHeader.querySelector('.sort-icon');
+                    if (sortIcon) {
+                        sortIcon.innerHTML = currentSortDirection === 'asc' ? ' &#9650;' : ' &#9660;'; // Up or Down arrow
+                    }
+                }
+            }
+        }
+
+        // Renderizar contratos na tabela
+        function renderContracts() {
+            if (filteredAndSortedContracts.length === 0) {
+                showNoResults();
+                return;
+            }
+
+            contractsContainer.style.display = 'block';
+            noResultsContainer.style.display = 'none';
+            paginationContainer.style.display = 'flex';
+            paginationInfo.style.display = 'block';
+            
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const contractsToDisplay = filteredAndSortedContracts.slice(startIndex, endIndex);
+            
+            contractsTableBody.innerHTML = contractsToDisplay.map(contract => `
+                <tr>
+                    <td><span class="font-semibold">${contract.numeroContrato || '-'}</span></td>
+                    <td>${contract.numeroCompra || '-'}</td>
+                    <td><span class="badge">${contract.nomeModalidadeCompra || '-'}</span></td>
+                    <td>${contract.nomeCategoria || '-'}</td>
+                    <td>${contract.unidadesRequisitantes || '-'}</td>
+                    <td><span class="font-mono text-xs">${formatCNPJ(contract.niFornecedor)}</span></td>
+                    <td>${contract.nomeRazaoSocialFornecedor || '-'}</td>
+                    <td><span class="font-mono text-xs">${contract.processo || '-'}</span></td>
+                    <td>${contract.objeto || '-'}</td>
+                    <td><span class="text-xs">${formatDate(contract.dataVigenciaInicial)}</span></td>
+                    <td><span class="text-xs">${formatDate(contract.dataVigenciaFinal)}</span></td>
+                    <td><span class="font-bold text-green-600">${formatCurrency(contract.valorGlobal)}</span></td>
+                </tr>
+            `).join('');
+
+            // Atualizar informações de paginação
+            const showingFrom = startIndex + 1;
+            const showingTo = Math.min(endIndex, filteredAndSortedContracts.length);
+            document.getElementById('showingFrom').textContent = showingFrom;
+            document.getElementById('showingTo').textContent = showingTo;
+            document.getElementById('totalItems').textContent = filteredAndSortedContracts.length;
+        }
+
+        // Export to CSV (current page only)
+        function exportToCsv() {
+            const headers = Array.from(document.querySelectorAll('.contracts-table th'))
+                               .map(th => th.textContent.trim().replace(/ \u25B2| \u25BC/g, '')); // Remove sort icons
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageContractsToExport = filteredAndSortedContracts.slice(startIndex, endIndex);
+
+            const rows = pageContractsToExport.map(contract => [
+                `"${(contract.numeroContrato || '-').replace(/"/g, '""')}"`,
+                `"${(contract.numeroCompra || '-').replace(/"/g, '""')}"`,
+                `"${(contract.nomeModalidadeCompra || '-').replace(/"/g, '""')}"`,
+                `"${(contract.nomeCategoria || '-').replace(/"/g, '""')}"`,
+                `"${(contract.unidadesRequisitantes || '-').replace(/"/g, '""')}"`,
+                `"${formatCNPJ(contract.niFornecedor).replace(/"/g, '""')}"`,
+                `"${(contract.nomeRazaoSocialFornecedor || '-').replace(/"/g, '""')}"`,
+                `"${(contract.processo || '-').replace(/"/g, '""')}"`,
+                `"${(contract.objeto || '-').replace(/"/g, '""')}"`,
+                `"${formatDate(contract.dataVigenciaInicial).replace(/"/g, '""')}"`,
+                `"${formatDate(contract.dataVigenciaFinal).replace(/"/g, '""')}"`,
+                `"${formatCurrency(contract.valorGlobal).replace(/"/g, '""')}"`
+            ].join(';')); // Use semicolon as separator for Brazilian CSVs
+
+            const csvContent = [headers.join(';'), ...rows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `contratos_pagina_${currentPage}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Atualizar estatísticas
+        function updateStats() {
+            const totalValue = filteredAndSortedContracts.reduce((sum, contract) => sum + (contract.valorGlobal || 0), 0);
+            const uniqueSuppliers = new Set(filteredAndSortedContracts.map(contract => contract.niFornecedor)).size;
+
+            document.getElementById('totalContracts').textContent = filteredAndSortedContracts.length;
+            document.getElementById('totalValue').textContent = formatCurrency(totalValue);
+            document.getElementById('uniqueSuppliers').textContent = uniqueSuppliers;
+        }
+
+        // Atualizar paginação
+        function updatePagination() {
+            if (totalPages <= 1) {
+                paginationContainer.style.display = 'none';
+                paginationInfo.style.display = 'none';
+                return;
+            }
+
+            paginationContainer.style.display = 'flex';
+            paginationInfo.style.display = 'block';
+
+            // Botões de navegação
+            document.getElementById('firstButton').disabled = currentPage <= 1;
+            document.getElementById('prevButton').disabled = currentPage <= 1;
+            document.getElementById('nextButton').disabled = currentPage >= totalPages;
+            document.getElementById('lastButton').disabled = currentPage >= totalPages;
+
+            // Números das páginas
+            const pageNumbers = document.getElementById('pageNumbers');
+            pageNumbers.innerHTML = '';
+
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.onclick = () => goToPage(i);
+                if (i === currentPage) {
+                    button.classList.add('active');
+                }
+                pageNumbers.appendChild(button);
+            }
+        }
+
+        // Estados da interface
+        function showLoading() {
+            loadingContainer.style.display = 'flex';
+            errorContainer.style.display = 'none';
+            contractsContainer.style.display = 'none';
+            noResultsContainer.style.display = 'none';
+            paginationContainer.style.display = 'none';
+            paginationInfo.style.display = 'none';
+        }
+
+        function hideLoading() {
+            loadingContainer.style.display = 'none';
+        }
+
+        function showError(message) {
+            hideLoading();
+            errorContainer.style.display = 'block';
+            contractsContainer.style.display = 'none';
+            noResultsContainer.style.display = 'none';
+            paginationContainer.style.display = 'none';
+            paginationInfo.style.display = 'none';
+            errorMessage.textContent = message;
+        }
+
+        function showNoResults() {
+            contractsContainer.style.display = 'none';
+            noResultsContainer.style.display = 'block';
+            paginationContainer.style.display = 'none';
+            paginationInfo.style.display = 'none';
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllContracts();
+
+            searchInput.addEventListener('input', (e) => {
+                searchTerm = e.target.value.toLowerCase();
+                applyFiltersAndSort();
+            });
+
+            document.querySelectorAll('.contracts-table th[data-sort-key]').forEach(header => {
+                header.addEventListener('click', () => {
+                    const sortKey = header.dataset.sortKey;
+                    handleSort(sortKey);
+                });
+            });
+
+            modalityFilterSelect.addEventListener('change', applyFilters);
+            categoryFilterSelect.addEventListener('change', applyFilters);
+            minValueFilterInput.addEventListener('input', applyFilters);
+            maxValueFilterInput.addEventListener('input', applyFilters);
+            itemsPerPageSelect.addEventListener('change', changeItemsPerPage);
+        });
+    </script>
+</body>
+</html>
