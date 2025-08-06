@@ -372,33 +372,17 @@
             color: #6b7280;
         }
 
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
+        .success-badge {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        .skeleton-card {
-            background: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .skeleton-line {
-            height: 1rem;
-            border-radius: 0.25rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .skeleton-line.short { width: 60%; }
-        .skeleton-line.medium { width: 80%; }
-        .skeleton-line.long { width: 100%; }
     </style>
 </head>
 <body>
@@ -421,6 +405,11 @@
     </header>
 
     <main class="main-content">
+        <div class="success-badge">
+            <i class="fas fa-check-circle"></i>
+            Conectado à API via Vercel - Dados atualizados em tempo real
+        </div>
+
         <div class="stats-grid" id="statsGrid">
             <div class="stat-card">
                 <div class="stat-icon contracts">
@@ -485,7 +474,7 @@
         let allContracts = [];
         let filteredContracts = [];
         let currentPage = 1;
-        let totalPages = 0;
+        let totalPages = 1;
         let searchTerm = '';
 
         // Elementos DOM
@@ -538,7 +527,7 @@
                 showLoading();
                 
                 const response = await fetch(
-                    `/api/contratos`,
+                    `https://nugarcsis.vercel.app/api/contratos?pagina=${page}`,
                     {
                         headers: {
                             'Accept': 'application/json',
@@ -551,9 +540,11 @@
                 }
 
                 const data = await response.json();
+                console.log('Dados recebidos:', data); // Para debug
                 
-                allContracts = data._embedded?.contratos || [];
-                totalPages = data.page?.totalPages || 0;
+                // CORREÇÃO: A sua API retorna um array direto, não _embedded.contratos
+                allContracts = Array.isArray(data) ? data : [];
+                totalPages = 1; // Como sua API não retorna paginação, assumimos 1 página
                 currentPage = page;
                 
                 filterContracts();
