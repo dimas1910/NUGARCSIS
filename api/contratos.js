@@ -1,5 +1,3 @@
-// api/contratos.js
-
 export default async function handler(req, res) {
   const pagina = req.query.pagina || 1;
 
@@ -18,7 +16,7 @@ export default async function handler(req, res) {
 
     res.setHeader('Access-Control-Allow-Origin', '*');
 
-    // ⬇️ Aqui está o ponto crítico: repassando só o array de contratos
+    // ⬇️ Aqui está o ponto crucial: repassar apenas o array de contratos
     res.status(200).json(data.resultado);
 
   } catch (err) {
