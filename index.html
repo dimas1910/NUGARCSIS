@@ -226,7 +226,7 @@
         .col-purchase { width: 8%; }
         .col-modality { width: 7%; }
         .col-category { width: 8%; }
-        .col-subcategory { width: 8%; }
+        .col-unit { width: 12%; }
         .col-cnpj { width: 9%; }
         .col-supplier { width: 15%; }
         .col-process { width: 8%; }
@@ -597,7 +597,7 @@
                             <th class="col-purchase">Número da Compra</th>
                             <th class="col-modality">Modalidade</th>
                             <th class="col-category">Categoria</th>
-                            <th class="col-subcategory">Subcategoria</th>
+                            <th class="col-unit">Unidade Requisitante</th>
                             <th class="col-cnpj">CNPJ do Fornecedor</th>
                             <th class="col-supplier">Fornecedor</th>
                             <th class="col-process">Número do PA SEI</th>
@@ -763,7 +763,8 @@
                     (contract.numeroContrato || '').toLowerCase().includes(searchTerm) ||
                     (contract.objeto || '').toLowerCase().includes(searchTerm) ||
                     (contract.numeroCompra || '').toLowerCase().includes(searchTerm) ||
-                    (contract.processo || '').toLowerCase().includes(searchTerm)
+                    (contract.processo || '').toLowerCase().includes(searchTerm) ||
+                    (contract.unidadesRequisitantes || '').toLowerCase().includes(searchTerm)
                 );
             }
             
@@ -795,7 +796,7 @@
                     <td>${contract.numeroCompra || '-'}</td>
                     <td><span class="badge">${contract.nomeModalidadeCompra || '-'}</span></td>
                     <td><span class="category-text">${contract.nomeCategoria || '-'}</span></td>
-                    <td><span class="category-text">${contract.nomeSubcategoria || '-'}</span></td>
+                    <td><span class="category-text">${contract.unidadesRequisitantes || '-'}</span></td>
                     <td><span class="cnpj">${formatCNPJ(contract.niFornecedor)}</span></td>
                     <td><span class="supplier-name">${contract.nomeRazaoSocialFornecedor || '-'}</span></td>
                     <td><span class="process-number">${contract.processo || '-'}</span></td>
