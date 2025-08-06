@@ -9,32 +9,18 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      console.error(`API error: ${response.status} ${response.statusText}`);
-      return res.status(response.status).json({ 
-        error: `Failed to fetch data from API: ${response.statusText}`,
-        status: response.status
-      });
+      return res.status(response.status).json({ error: 'Erro ao acessar a API pública.' });
     }
 
     const data = await response.json();
 
-    if (!data.resultado) {
-      console.warn('API response missing "resultado" field:', data);
-      return res.status(200).json([]);
-    }
-
-    if (data.resultado.length === 0) {
-      console.log('No contracts found for codigoUnidadeGestora=100001, date range 2025-01-01 to 2025-12-31');
-    }
-
     res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // ⬇️ Aqui está o ponto crucial: repassar apenas o array de contratos
     res.status(200).json(data.resultado);
 
   } catch (err) {
-    console.error('Server error fetching contracts:', err.message);
-    res.status(500).json({ 
-      error: 'Internal server error',
-      details: err.message
-    });
+    console.error('Erro ao buscar contratos:', err);
+    res.status(500).json({ error: 'Erro interno do servidor' });
   }
 }
