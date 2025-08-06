@@ -26,7 +26,7 @@
         }
 
         .header-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 1.5rem;
             display: flex;
@@ -53,10 +53,24 @@
             color: #6b7280;
         }
 
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        @media (min-width: 768px) {
+            .controls {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
         .search-container {
             position: relative;
-            width: 100%;
-            max-width: 320px;
+            flex: 1;
         }
 
         .search-input {
@@ -82,10 +96,37 @@
             color: #9ca3af;
         }
 
+        .items-per-page {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .items-per-page select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            outline: none;
+        }
+
         .main-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem 1rem;
+        }
+
+        .success-badge {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .stats-grid {
@@ -131,45 +172,89 @@
             color: #111827;
         }
 
-        .contracts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .contract-card {
+        /* Layout da tabela horizontal */
+        .contracts-table {
             background: white;
             border-radius: 0.75rem;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            transition: box-shadow 0.2s;
+            margin-bottom: 2rem;
         }
 
-        .contract-card:hover {
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        .table-container {
+            overflow-x: auto;
         }
 
-        .card-header {
-            padding: 1.5rem 1.5rem 0.75rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        .contracts-table table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
         }
 
-        .card-title {
-            font-size: 1.125rem;
+        .contracts-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
             font-weight: 600;
-            color: #111827;
-            margin-bottom: 0.25rem;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
         }
 
-        .card-subtitle {
+        .contracts-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        .contracts-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .contract-number {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .supplier-name {
+            font-weight: 500;
+            color: #1f2937;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cnpj {
+            font-family: monospace;
             font-size: 0.875rem;
             color: #6b7280;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
+        }
+
+        .object-text {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .process-number {
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .date-cell {
+            font-size: 0.875rem;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .value-cell {
+            font-weight: 600;
+            color: #10b981;
+            text-align: right;
+            white-space: nowrap;
         }
 
         .badge {
@@ -179,79 +264,7 @@
             border-radius: 0.375rem;
             font-size: 0.75rem;
             font-weight: 500;
-        }
-
-        .card-content {
-            padding: 0 1.5rem 1.5rem;
-        }
-
-        .info-section {
-            margin-bottom: 1rem;
-        }
-
-        .info-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .info-title {
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 0.25rem;
-            font-size: 0.875rem;
-        }
-
-        .info-text {
-            font-size: 0.875rem;
-            color: #374151;
-            line-height: 1.4;
-        }
-
-        .info-subtext {
-            font-size: 0.75rem;
-            color: #6b7280;
-            margin-top: 0.125rem;
-        }
-
-        .date-info {
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .date-info i {
-            color: #9ca3af;
-            width: 12px;
-        }
-
-        .date-label {
-            color: #6b7280;
-        }
-
-        .date-value {
-            font-weight: 500;
-            color: #111827;
-        }
-
-        .value-section {
-            padding-top: 0.75rem;
-            border-top: 1px solid #f3f4f6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .value-label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #6b7280;
-        }
-
-        .value-amount {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: #10b981;
+            white-space: nowrap;
         }
 
         .pagination {
@@ -260,6 +273,7 @@
             align-items: center;
             gap: 0.5rem;
             margin-top: 2rem;
+            flex-wrap: wrap;
         }
 
         .pagination button {
@@ -270,6 +284,7 @@
             border-radius: 0.375rem;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 0.875rem;
         }
 
         .pagination button:hover:not(:disabled) {
@@ -282,17 +297,26 @@
             cursor: not-allowed;
         }
 
+        .pagination button.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
         .pagination-info {
             font-size: 0.875rem;
             color: #6b7280;
             margin: 0 1rem;
+            text-align: center;
         }
 
         .loading {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 3rem;
+            gap: 1rem;
         }
 
         .spinner {
@@ -302,6 +326,11 @@
             border-top: 3px solid #3b82f6;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: #6b7280;
+            font-size: 0.875rem;
         }
 
         @keyframes spin {
@@ -353,6 +382,9 @@
         .no-results {
             text-align: center;
             padding: 3rem;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .no-results i {
@@ -372,16 +404,20 @@
             color: #6b7280;
         }
 
-        .success-badge {
-            background: #d1fae5;
-            color: #065f46;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+        @media (max-width: 768px) {
+            .contracts-table th,
+            .contracts-table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.875rem;
+            }
+            
+            .supplier-name {
+                max-width: 150px;
+            }
+            
+            .object-text {
+                max-width: 200px;
+            }
         }
     </style>
 </head>
@@ -392,14 +428,25 @@
                 <h1>Contratos Governamentais</h1>
                 <p>Consulta de contratos públicos - Dados Abertos</p>
             </div>
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input 
-                    type="text" 
-                    class="search-input" 
-                    placeholder="Buscar por fornecedor, contrato ou objeto..."
-                    id="searchInput"
-                >
+            <div class="controls">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        placeholder="Buscar por fornecedor, contrato ou objeto..."
+                        id="searchInput"
+                    >
+                </div>
+                <div class="items-per-page">
+                    <label for="itemsPerPage">Itens por página:</label>
+                    <select id="itemsPerPage" onchange="changeItemsPerPage()">
+                        <option value="10">10</option>
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
             </div>
         </div>
     </header>
@@ -407,7 +454,7 @@
     <main class="main-content">
         <div class="success-badge">
             <i class="fas fa-check-circle"></i>
-            Conectado à API via Vercel - Dados atualizados em tempo real
+            <span id="statusText">Conectado à API via Vercel - Carregando todos os contratos...</span>
         </div>
 
         <div class="stats-grid" id="statsGrid">
@@ -442,16 +489,40 @@
 
         <div id="loadingContainer" class="loading">
             <div class="spinner"></div>
+            <div class="loading-text">Carregando todos os contratos da API...</div>
         </div>
 
         <div id="errorContainer" class="error" style="display: none;">
             <i class="fas fa-exclamation-triangle"></i>
             <h3>Erro ao carregar dados</h3>
             <p id="errorMessage">Ocorreu um erro ao buscar os dados da API.</p>
-            <button onclick="loadContracts()">Tentar novamente</button>
+            <button onclick="loadAllContracts()">Tentar novamente</button>
         </div>
 
-        <div id="contractsContainer" class="contracts-grid" style="display: none;"></div>
+        <div id="contractsContainer" class="contracts-table" style="display: none;">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Número do Contrato</th>
+                            <th>Número da Compra</th>
+                            <th>Modalidade</th>
+                            <th>Categoria</th>
+                            <th>Subcategoria</th>
+                            <th>CNPJ do Fornecedor</th>
+                            <th>Fornecedor</th>
+                            <th>Número do PA SEI</th>
+                            <th>Objeto</th>
+                            <th>Vigência Inicial</th>
+                            <th>Vigência Final</th>
+                            <th>Valor Atual do Contrato</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contractsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
         <div id="noResultsContainer" class="no-results" style="display: none;">
             <i class="fas fa-search"></i>
@@ -460,13 +531,23 @@
         </div>
 
         <div id="paginationContainer" class="pagination" style="display: none;">
+            <button id="firstButton" onclick="goToPage(1)">
+                <i class="fas fa-angle-double-left"></i> Primeira
+            </button>
             <button id="prevButton" onclick="changePage(-1)">
                 <i class="fas fa-chevron-left"></i> Anterior
             </button>
-            <span class="pagination-info" id="paginationInfo">Página 1 de 1</span>
+            <div id="pageNumbers"></div>
             <button id="nextButton" onclick="changePage(1)">
                 Próxima <i class="fas fa-chevron-right"></i>
             </button>
+            <button id="lastButton" onclick="goToPage(totalPages)">
+                Última <i class="fas fa-angle-double-right"></i>
+            </button>
+        </div>
+
+        <div class="pagination-info" id="paginationInfo" style="display: none; text-align: center; margin-top: 1rem;">
+            Mostrando <span id="showingFrom">1</span> a <span id="showingTo">25</span> de <span id="totalItems">0</span> contratos
         </div>
     </main>
 
@@ -474,7 +555,8 @@
         let allContracts = [];
         let filteredContracts = [];
         let currentPage = 1;
-        let totalPages = 1;
+        let itemsPerPage = 25;
+        let totalPages = 0;
         let searchTerm = '';
 
         // Elementos DOM
@@ -482,19 +564,20 @@
         const loadingContainer = document.getElementById('loadingContainer');
         const errorContainer = document.getElementById('errorContainer');
         const contractsContainer = document.getElementById('contractsContainer');
+        const contractsTableBody = document.getElementById('contractsTableBody');
         const noResultsContainer = document.getElementById('noResultsContainer');
         const paginationContainer = document.getElementById('paginationContainer');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const statusText = document.getElementById('statusText');
         const totalContractsEl = document.getElementById('totalContracts');
         const totalValueEl = document.getElementById('totalValue');
         const uniqueSuppliersEl = document.getElementById('uniqueSuppliers');
-        const paginationInfo = document.getElementById('paginationInfo');
-        const prevButton = document.getElementById('prevButton');
-        const nextButton = document.getElementById('nextButton');
         const errorMessage = document.getElementById('errorMessage');
 
         // Event Listeners
         searchInput.addEventListener('input', (e) => {
             searchTerm = e.target.value.toLowerCase();
+            currentPage = 1;
             filterContracts();
         });
 
@@ -516,40 +599,55 @@
             return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
         }
 
-        function truncateText(text, maxLength = 150) {
+        function truncateText(text, maxLength = 80) {
             if (!text) return '-';
             return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
         }
 
-        // Carregar contratos da API
-        async function loadContracts(page = 1) {
+        // Carregar TODOS os contratos da API
+        async function loadAllContracts() {
             try {
                 showLoading();
+                statusText.textContent = 'Conectado à API via Vercel - Carregando todos os contratos...';
                 
-                const response = await fetch(
-                    `https://nugarcsis.vercel.app/api/contratos?pagina=${page}`,
-                    {
-                        headers: {
-                            'Accept': 'application/json',
+                let allData = [];
+                let page = 1;
+                let hasMoreData = true;
+
+                // Loop para buscar todas as páginas
+                while (hasMoreData) {
+                    const response = await fetch(
+                        `https://nugarcsis.vercel.app/api/contratos?pagina=${page}`,
+                        {
+                            headers: {
+                                'Accept': 'application/json',
+                            }
                         }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(`Erro HTTP: ${response.status}`);
                     }
-                );
 
-                if (!response.ok) {
-                    throw new Error(`Erro HTTP: ${response.status}`);
+                    const data = await response.json();
+                    const contracts = Array.isArray(data) ? data : [];
+                    
+                    if (contracts.length === 0) {
+                        hasMoreData = false;
+                    } else {
+                        allData = [...allData, ...contracts];
+                        page++;
+                        
+                        // Atualizar status
+                        statusText.textContent = `Carregando contratos... (${allData.length} encontrados)`;
+                    }
                 }
-
-                const data = await response.json();
-                console.log('Dados recebidos:', data); // Para debug
                 
-                // CORREÇÃO: A sua API retorna um array direto, não _embedded.contratos
-                allContracts = Array.isArray(data) ? data : [];
-                totalPages = 1; // Como sua API não retorna paginação, assumimos 1 página
-                currentPage = page;
+                allContracts = allData;
+                statusText.textContent = `Conectado à API via Vercel - ${allContracts.length} contratos carregados`;
                 
                 filterContracts();
                 updateStats();
-                updatePagination();
                 hideLoading();
                 
             } catch (error) {
@@ -566,80 +664,57 @@
                 filteredContracts = allContracts.filter(contract => 
                     (contract.nomeRazaoSocialFornecedor || '').toLowerCase().includes(searchTerm) ||
                     (contract.numeroContrato || '').toLowerCase().includes(searchTerm) ||
-                    (contract.objeto || '').toLowerCase().includes(searchTerm)
+                    (contract.objeto || '').toLowerCase().includes(searchTerm) ||
+                    (contract.numeroCompra || '').toLowerCase().includes(searchTerm) ||
+                    (contract.processo || '').toLowerCase().includes(searchTerm)
                 );
             }
             
+            totalPages = Math.ceil(filteredContracts.length / itemsPerPage);
             renderContracts();
+            updatePagination();
             updateStats();
         }
 
-        // Renderizar contratos
+        // Renderizar contratos na tabela
         function renderContracts() {
             if (filteredContracts.length === 0) {
                 showNoResults();
                 return;
             }
 
-            contractsContainer.style.display = 'grid';
+            contractsContainer.style.display = 'block';
             noResultsContainer.style.display = 'none';
+            paginationContainer.style.display = 'flex';
+            paginationInfo.style.display = 'block';
             
-            contractsContainer.innerHTML = filteredContracts.map(contract => `
-                <div class="contract-card">
-                    <div class="card-header">
-                        <div>
-                            <div class="card-title">Contrato #${contract.numeroContrato || '-'}</div>
-                            <div class="card-subtitle">
-                                <i class="fas fa-hashtag"></i>
-                                Compra: ${contract.numeroCompra || '-'}
-                            </div>
-                        </div>
-                        <div class="badge">${contract.nomeModalidadeCompra || '-'}</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <div class="info-title">Fornecedor</div>
-                            <div class="info-text">${contract.nomeRazaoSocialFornecedor || '-'}</div>
-                            <div class="info-subtext">CNPJ: ${formatCNPJ(contract.niFornecedor)}</div>
-                        </div>
-
-                        <div class="info-section">
-                            <div class="info-title">Categoria</div>
-                            <div class="info-text">${contract.nomeCategoria || '-'}</div>
-                            ${contract.nomeSubcategoria ? `<div class="info-subtext">${contract.nomeSubcategoria}</div>` : ''}
-                        </div>
-
-                        <div class="info-section">
-                            <div class="info-title">Objeto</div>
-                            <div class="info-text">${truncateText(contract.objeto)}</div>
-                        </div>
-
-                        <div class="info-section">
-                            <div class="info-title">Processo SEI</div>
-                            <div class="info-text" style="font-family: monospace; font-size: 0.8rem;">${contract.processo || '-'}</div>
-                        </div>
-
-                        <div class="info-section">
-                            <div class="date-info">
-                                <i class="fas fa-calendar"></i>
-                                <span class="date-label">Início:</span>
-                                <span class="date-value">${formatDate(contract.dataVigenciaInicial)}</span>
-                            </div>
-                            <div class="date-info">
-                                <i class="fas fa-calendar"></i>
-                                <span class="date-label">Fim:</span>
-                                <span class="date-value">${formatDate(contract.dataVigenciaFinal)}</span>
-                            </div>
-                        </div>
-
-                        <div class="value-section">
-                            <span class="value-label">Valor do Contrato</span>
-                            <span class="value-amount">${formatCurrency(contract.valorGlobal)}</span>
-                        </div>
-                    </div>
-                </div>
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageContracts = filteredContracts.slice(startIndex, endIndex);
+            
+            contractsTableBody.innerHTML = pageContracts.map(contract => `
+                <tr>
+                    <td><span class="contract-number">${contract.numeroContrato || '-'}</span></td>
+                    <td>${contract.numeroCompra || '-'}</td>
+                    <td><span class="badge">${contract.nomeModalidadeCompra || '-'}</span></td>
+                    <td>${contract.nomeCategoria || '-'}</td>
+                    <td>${contract.nomeSubcategoria || '-'}</td>
+                    <td><span class="cnpj">${formatCNPJ(contract.niFornecedor)}</span></td>
+                    <td><span class="supplier-name" title="${contract.nomeRazaoSocialFornecedor || '-'}">${contract.nomeRazaoSocialFornecedor || '-'}</span></td>
+                    <td><span class="process-number">${contract.processo || '-'}</span></td>
+                    <td><span class="object-text" title="${contract.objeto || '-'}">${truncateText(contract.objeto)}</span></td>
+                    <td><span class="date-cell">${formatDate(contract.dataVigenciaInicial)}</span></td>
+                    <td><span class="date-cell">${formatDate(contract.dataVigenciaFinal)}</span></td>
+                    <td><span class="value-cell">${formatCurrency(contract.valorGlobal)}</span></td>
+                </tr>
             `).join('');
+
+            // Atualizar informações de paginação
+            const showingFrom = startIndex + 1;
+            const showingTo = Math.min(endIndex, filteredContracts.length);
+            document.getElementById('showingFrom').textContent = showingFrom;
+            document.getElementById('showingTo').textContent = showingTo;
+            document.getElementById('totalItems').textContent = filteredContracts.length;
         }
 
         // Atualizar estatísticas
@@ -656,21 +731,63 @@
         function updatePagination() {
             if (totalPages <= 1) {
                 paginationContainer.style.display = 'none';
+                paginationInfo.style.display = 'none';
                 return;
             }
 
             paginationContainer.style.display = 'flex';
-            paginationInfo.textContent = `Página ${currentPage} de ${totalPages}`;
-            prevButton.disabled = currentPage <= 1;
-            nextButton.disabled = currentPage >= totalPages;
+            paginationInfo.style.display = 'block';
+
+            // Botões de navegação
+            document.getElementById('firstButton').disabled = currentPage <= 1;
+            document.getElementById('prevButton').disabled = currentPage <= 1;
+            document.getElementById('nextButton').disabled = currentPage >= totalPages;
+            document.getElementById('lastButton').disabled = currentPage >= totalPages;
+
+            // Números das páginas
+            const pageNumbers = document.getElementById('pageNumbers');
+            pageNumbers.innerHTML = '';
+
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.onclick = () => goToPage(i);
+                if (i === currentPage) {
+                    button.classList.add('active');
+                }
+                pageNumbers.appendChild(button);
+            }
         }
 
         // Mudar página
         function changePage(direction) {
             const newPage = currentPage + direction;
             if (newPage >= 1 && newPage <= totalPages) {
-                loadContracts(newPage);
+                goToPage(newPage);
             }
+        }
+
+        // Ir para página específica
+        function goToPage(page) {
+            currentPage = page;
+            renderContracts();
+            updatePagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mudar itens por página
+        function changeItemsPerPage() {
+            itemsPerPage = parseInt(document.getElementById('itemsPerPage').value);
+            currentPage = 1;
+            filterContracts();
         }
 
         // Estados da interface
@@ -680,6 +797,7 @@
             contractsContainer.style.display = 'none';
             noResultsContainer.style.display = 'none';
             paginationContainer.style.display = 'none';
+            paginationInfo.style.display = 'none';
         }
 
         function hideLoading() {
@@ -692,17 +810,20 @@
             contractsContainer.style.display = 'none';
             noResultsContainer.style.display = 'none';
             paginationContainer.style.display = 'none';
+            paginationInfo.style.display = 'none';
             errorMessage.textContent = message;
         }
 
         function showNoResults() {
             contractsContainer.style.display = 'none';
             noResultsContainer.style.display = 'block';
+            paginationContainer.style.display = 'none';
+            paginationInfo.style.display = 'none';
         }
 
         // Inicializar aplicação
         document.addEventListener('DOMContentLoaded', () => {
-            loadContracts();
+            loadAllContracts();
         });
     </script>
 </body>
