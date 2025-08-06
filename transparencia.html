@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contratos Governamentais - Dados Abertos</title>
+    <title>Contratos Governamentais - NUGARCSYS</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
             min-height: 100vh;
             color: #1f2937;
@@ -282,8 +282,15 @@
         }
 
         .badge {
+            background: #f3f4f6;
+            color: #374151;
             padding: 0.25rem 0.375rem;
+            border-radius: 0.25rem;
             font-size: 0.65rem;
+            font-weight: 500;
+            display: inline-block;
+            word-wrap: break-word;
+            line-height: 1.2;
         }
 
         .pagination {
@@ -650,7 +657,7 @@
             </div>
         </div>
 
-        <!-- Advanced Filters and Export - MOVED HERE -->
+        <!-- Advanced Filters and Export -->
         <div class="filter-export-controls">
             <div class="filter-group">
                 <label for="modalityFilter">Modalidade:</label>
@@ -751,7 +758,7 @@
 
     <script>
         let allContracts = [];
-        let filteredContracts = [];
+        let filteredAndSortedContracts = [];
         let currentPage = 1;
         let itemsPerPage = 25;
         let totalPages = 0;
@@ -779,23 +786,9 @@
         const categoryFilterSelect = document.getElementById('categoryFilter');
         const minValueFilterInput = document.getElementById('minValueFilter');
         const maxValueFilterInput = document.getElementById('maxValueFilter');
+        const itemsPerPageSelect = document.getElementById('itemsPerPage');
 
-        // Event Listeners
-        searchInput.addEventListener('input', (e) => {
-            searchTerm = e.target.value.toLowerCase();
-            currentPage = 1;
-            filterContracts();
-        });
-
-        // Add event listeners for sorting
-        document.querySelectorAll('.contracts-table th[data-sort-key]').forEach(header => {
-            header.addEventListener('click', () => {
-                const sortKey = header.dataset.sortKey;
-                sortContracts(sortKey);
-            });
-        });
-
-        // Funções utilitárias
+        // Utility Functions
         function formatCurrency(value) {
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
@@ -858,8 +851,7 @@
                 
                 allContracts = allData;
                 populateFilterOptions(); // Populate filters after loading all data
-                filterContracts();
-                updateStats();
+                applyFiltersAndSort(); // Apply initial filters and sort
                 hideLoading();
                 
             } catch (error) {
@@ -879,24 +871,8 @@
                 Array.from(categories).sort().map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
-        // Apply advanced filters
-        function applyFilters() {
-            currentPage = 1;
-            filterContracts();
-        }
-
-        // Clear advanced filters
-        function clearFilters() {
-            modalityFilterSelect.value = 'all';
-            categoryFilterSelect.value = 'all';
-            minValueFilterInput.value = '';
-            maxValueFilterInput.value = '';
-            currentPage = 1;
-            filterContracts();
-        }
-
-        // Filtrar contratos
-        function filterContracts() {
+        // Apply all filters and sorting
+        function applyFiltersAndSort() {
             let tempFiltered = [...allContracts];
 
             // Search term filter
@@ -934,57 +910,81 @@
                 tempFiltered = tempFiltered.filter(contract => (contract.valorGlobal || 0) <= maxValue);
             }
 
-            filteredContracts = tempFiltered;
-            
-            // Apply sorting after filtering
+            // Apply sorting
             if (currentSortColumn) {
-                sortContracts(currentSortColumn, true); // true to re-sort without changing direction
-            } else {
-                totalPages = Math.ceil(filteredContracts.length / itemsPerPage);
-                renderContracts();
-                updatePagination();
-                updateStats();
-            }
-        }
+                tempFiltered.sort((a, b) => {
+                    const valA = a[currentSortColumn];
+                    const valB = b[currentSortColumn];
 
-        // Sort contracts
-        function sortContracts(columnKey, keepDirection = false) {
-            if (!keepDirection) {
-                if (currentSortColumn === columnKey) {
-                    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
-                } else {
-                    currentSortColumn = columnKey;
-                    currentSortDirection = 'asc';
-                }
-            }
-
-            filteredContracts.sort((a, b) => {
-                const valA = a[columnKey];
-                const valB = b[columnKey];
-
-                if (typeof valA === 'string' && typeof valB === 'string') {
-                    return currentSortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
-                }
-                // Handle numbers and dates
-                if (columnKey.includes('dataVigencia') || columnKey === 'valorGlobal') {
+                    if (typeof valA === 'string' && typeof valB === 'string') {
+                        return currentSortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                    }
+                    if (currentSortColumn.includes('dataVigencia')) {
+                        const dateA = new Date(valA).getTime();
+                        const dateB = new Date(valB).getTime();
+                        return currentSortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+                    }
+                    // For numbers (like valorGlobal)
                     const numA = parseFloat(valA) || 0;
                     const numB = parseFloat(valB) || 0;
                     return currentSortDirection === 'asc' ? numA - numB : numB - numA;
-                }
-                return currentSortDirection === 'asc' ? valA - valB : valB - valA;
-            });
+                });
+            }
 
-            totalPages = Math.ceil(filteredContracts.length / itemsPerPage);
+            filteredAndSortedContracts = tempFiltered;
+            totalPages = Math.ceil(filteredAndSortedContracts.length / itemsPerPage);
+            currentPage = 1; // Reset to first page on filter/sort change
             renderContracts();
             updatePagination();
             updateStats();
             updateSortIcons();
         }
 
+        // Handlers for UI interactions
+        function handleSort(columnKey) {
+            if (currentSortColumn === columnKey) {
+                currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortColumn = columnKey;
+                currentSortDirection = 'asc';
+            }
+            applyFiltersAndSort(); // Re-apply filters and sort
+        }
+
+        function applyFilters() {
+            applyFiltersAndSort();
+        }
+
+        function clearFilters() {
+            modalityFilterSelect.value = 'all';
+            categoryFilterSelect.value = 'all';
+            minValueFilterInput.value = '';
+            maxValueFilterInput.value = '';
+            applyFiltersAndSort(); // Re-apply filters with cleared values
+        }
+
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            if (newPage >= 1 && newPage <= totalPages) {
+                goToPage(newPage);
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderContracts();
+            updatePagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function changeItemsPerPage() {
+            itemsPerPage = parseInt(itemsPerPageSelect.value);
+            applyFiltersAndSort(); // Re-apply filters and sort
+        }
+
         // Update sort icons in table headers
         function updateSortIcons() {
             document.querySelectorAll('.contracts-table th').forEach(header => {
-                header.classList.remove('sorted');
                 const sortIcon = header.querySelector('.sort-icon');
                 if (sortIcon) {
                     sortIcon.innerHTML = ''; // Clear previous icon
@@ -994,7 +994,6 @@
             if (currentSortColumn) {
                 const activeHeader = document.querySelector(`.contracts-table th[data-sort-key="${currentSortColumn}"]`);
                 if (activeHeader) {
-                    activeHeader.classList.add('sorted');
                     const sortIcon = activeHeader.querySelector('.sort-icon');
                     if (sortIcon) {
                         sortIcon.innerHTML = currentSortDirection === 'asc' ? ' &#9650;' : ' &#9660;'; // Up or Down arrow
@@ -1005,7 +1004,7 @@
 
         // Renderizar contratos na tabela
         function renderContracts() {
-            if (filteredContracts.length === 0) {
+            if (filteredAndSortedContracts.length === 0) {
                 showNoResults();
                 return;
             }
@@ -1017,31 +1016,31 @@
             
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            const pageContracts = filteredContracts.slice(startIndex, endIndex);
+            const contractsToDisplay = filteredAndSortedContracts.slice(startIndex, endIndex);
             
-            contractsTableBody.innerHTML = pageContracts.map(contract => `
+            contractsTableBody.innerHTML = contractsToDisplay.map(contract => `
                 <tr>
-                    <td><span class="contract-number">${contract.numeroContrato || '-'}</span></td>
+                    <td><span class="font-semibold">${contract.numeroContrato || '-'}</span></td>
                     <td>${contract.numeroCompra || '-'}</td>
                     <td><span class="badge">${contract.nomeModalidadeCompra || '-'}</span></td>
-                    <td><span class="category-text">${contract.nomeCategoria || '-'}</span></td>
-                    <td><span class="category-text">${contract.unidadesRequisitantes || '-'}</span></td>
-                    <td><span class="cnpj">${formatCNPJ(contract.niFornecedor)}</span></td>
-                    <td><span class="supplier-name">${contract.nomeRazaoSocialFornecedor || '-'}</span></td>
-                    <td><span class="process-number">${contract.processo || '-'}</span></td>
-                    <td><span class="object-text">${contract.objeto || '-'}</span></td>
-                    <td><span class="date-cell">${formatDate(contract.dataVigenciaInicial)}</span></td>
-                    <td><span class="date-cell">${formatDate(contract.dataVigenciaFinal)}</span></td>
-                    <td><span class="value-cell">${formatCurrency(contract.valorGlobal)}</span></td>
+                    <td>${contract.nomeCategoria || '-'}</td>
+                    <td>${contract.unidadesRequisitantes || '-'}</td>
+                    <td><span class="font-mono text-xs">${formatCNPJ(contract.niFornecedor)}</span></td>
+                    <td>${contract.nomeRazaoSocialFornecedor || '-'}</td>
+                    <td><span class="font-mono text-xs">${contract.processo || '-'}</span></td>
+                    <td>${contract.objeto || '-'}</td>
+                    <td><span class="text-xs">${formatDate(contract.dataVigenciaInicial)}</span></td>
+                    <td><span class="text-xs">${formatDate(contract.dataVigenciaFinal)}</span></td>
+                    <td><span class="font-bold text-green-600">${formatCurrency(contract.valorGlobal)}</span></td>
                 </tr>
             `).join('');
 
             // Atualizar informações de paginação
             const showingFrom = startIndex + 1;
-            const showingTo = Math.min(endIndex, filteredContracts.length);
+            const showingTo = Math.min(endIndex, filteredAndSortedContracts.length);
             document.getElementById('showingFrom').textContent = showingFrom;
             document.getElementById('showingTo').textContent = showingTo;
-            document.getElementById('totalItems').textContent = filteredContracts.length;
+            document.getElementById('totalItems').textContent = filteredAndSortedContracts.length;
         }
 
         // Export to CSV (current page only)
@@ -1051,7 +1050,7 @@
 
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            const pageContractsToExport = filteredContracts.slice(startIndex, endIndex);
+            const pageContractsToExport = filteredAndSortedContracts.slice(startIndex, endIndex);
 
             const rows = pageContractsToExport.map(contract => [
                 `"${(contract.numeroContrato || '-').replace(/"/g, '""')}"`,
@@ -1080,12 +1079,12 @@
 
         // Atualizar estatísticas
         function updateStats() {
-            const totalValue = filteredContracts.reduce((sum, contract) => sum + (contract.valorGlobal || 0), 0);
-            const uniqueSuppliers = new Set(filteredContracts.map(contract => contract.niFornecedor)).size;
+            const totalValue = filteredAndSortedContracts.reduce((sum, contract) => sum + (contract.valorGlobal || 0), 0);
+            const uniqueSuppliers = new Set(filteredAndSortedContracts.map(contract => contract.niFornecedor)).size;
 
-            totalContractsEl.textContent = filteredContracts.length;
-            totalValueEl.textContent = formatCurrency(totalValue);
-            uniqueSuppliersEl.textContent = uniqueSuppliers;
+            document.getElementById('totalContracts').textContent = filteredAndSortedContracts.length;
+            document.getElementById('totalValue').textContent = formatCurrency(totalValue);
+            document.getElementById('uniqueSuppliers').textContent = uniqueSuppliers;
         }
 
         // Atualizar paginação
@@ -1128,29 +1127,6 @@
             }
         }
 
-        // Mudar página
-        function changePage(direction) {
-            const newPage = currentPage + direction;
-            if (newPage >= 1 && newPage <= totalPages) {
-                goToPage(newPage);
-            }
-        }
-
-        // Ir para página específica
-        function goToPage(page) {
-            currentPage = page;
-            renderContracts();
-            updatePagination();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Mudar itens por página
-        function changeItemsPerPage() {
-            itemsPerPage = parseInt(document.getElementById('itemsPerPage').value);
-            currentPage = 1;
-            filterContracts();
-        }
-
         // Estados da interface
         function showLoading() {
             loadingContainer.style.display = 'flex';
@@ -1182,9 +1158,27 @@
             paginationInfo.style.display = 'none';
         }
 
-        // Inicializar aplicação
+        // Event Listeners
         document.addEventListener('DOMContentLoaded', () => {
             loadAllContracts();
+
+            searchInput.addEventListener('input', (e) => {
+                searchTerm = e.target.value.toLowerCase();
+                applyFiltersAndSort();
+            });
+
+            document.querySelectorAll('.contracts-table th[data-sort-key]').forEach(header => {
+                header.addEventListener('click', () => {
+                    const sortKey = header.dataset.sortKey;
+                    handleSort(sortKey);
+                });
+            });
+
+            modalityFilterSelect.addEventListener('change', applyFilters);
+            categoryFilterSelect.addEventListener('change', applyFilters);
+            minValueFilterInput.addEventListener('input', applyFilters);
+            maxValueFilterInput.addEventListener('input', applyFilters);
+            itemsPerPageSelect.addEventListener('change', changeItemsPerPage);
         });
     </script>
 </body>
