@@ -193,8 +193,8 @@
         .contracts-table table {
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
-            min-width: 100%;
+            table-layout: fixed; /* Mantém as larguras fixas */
+            min-width: 1200px; /* Largura mínima para evitar quebra excessiva */
         }
 
         .contracts-table th {
@@ -222,38 +222,23 @@
         }
 
         /* Larguras específicas das colunas */
-        .col-contract { width: 8%; }
-        .col-purchase { width: 8%; }
+        .col-contract { width: 7%; }
+        .col-purchase { width: 7%; }
         .col-modality { width: 7%; }
         .col-category { width: 8%; }
-        .col-unit { width: 12%; }
+        .col-unit { width: 10%; }
         .col-cnpj { width: 9%; }
-        .col-supplier { width: 15%; }
+        .col-supplier { width: 13%; }
         .col-process { width: 8%; }
-        .col-object { width: 20%; }
+        .col-object { width: 25%; } /* Aumentado para acomodar texto completo */
         .col-start-date { width: 6%; }
         .col-end-date { width: 6%; }
         .col-value { width: 7%; }
 
-        .contract-number {
-            font-weight: 600;
-            color: #1f2937;
-            word-break: break-word;
-        }
-
-        .supplier-name {
-            font-weight: 500;
-            color: #1f2937;
+        .contract-number, .supplier-name, .cnpj, .process-number, .date-cell, .value-cell, .badge, .category-text {
             word-wrap: break-word;
             overflow-wrap: break-word;
             hyphens: auto;
-        }
-
-        .cnpj {
-            font-family: monospace;
-            font-size: 0.7rem;
-            color: #6b7280;
-            word-break: break-all;
         }
 
         .object-text {
@@ -261,64 +246,16 @@
             overflow-wrap: break-word;
             hyphens: auto;
             line-height: 1.4;
-            max-height: 4.2em;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
+            /* Removido max-height, overflow: hidden, -webkit-line-clamp */
         }
 
-        .object-text.expanded {
-            max-height: none;
-            -webkit-line-clamp: unset;
-        }
-
-        .expand-btn {
-            color: #3b82f6;
-            cursor: pointer;
-            font-size: 0.7rem;
-            text-decoration: underline;
-            margin-top: 0.25rem;
-            display: block;
-        }
-
-        .process-number {
-            font-family: monospace;
-            font-size: 0.7rem;
-            color: #6b7280;
-            word-break: break-word;
-        }
-
-        .date-cell {
-            font-size: 0.7rem;
-            color: #374151;
-            white-space: nowrap;
-        }
-
-        .value-cell {
-            font-weight: 600;
-            color: #10b981;
-            text-align: right;
-            font-size: 0.7rem;
-            word-break: break-word;
+        .cnpj, .process-number, .date-cell, .value-cell {
+            font-size: 0.7rem; /* Mantido para compactar */
         }
 
         .badge {
-            background: #f3f4f6;
-            color: #374151;
             padding: 0.25rem 0.375rem;
-            border-radius: 0.25rem;
             font-size: 0.65rem;
-            font-weight: 500;
-            display: inline-block;
-            word-wrap: break-word;
-            line-height: 1.2;
-        }
-
-        .category-text {
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
         }
 
         .pagination {
@@ -688,19 +625,6 @@
             return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
         }
 
-        function createExpandableText(text, maxLength = 150) {
-            if (!text) return '-';
-            
-            if (text.length <= maxLength) {
-                return `<span class="object-text">${text}</span>`;
-            }
-            
-            const id = 'text_' + Math.random().toString(36).substr(2, 9);
-            return `
-                <span class="object-text" id="${id}">${text}</span>
-            `;
-        }
-
         // Carregar TODOS os contratos da API
         async function loadAllContracts() {
             try {
@@ -800,7 +724,7 @@
                     <td><span class="cnpj">${formatCNPJ(contract.niFornecedor)}</span></td>
                     <td><span class="supplier-name">${contract.nomeRazaoSocialFornecedor || '-'}</span></td>
                     <td><span class="process-number">${contract.processo || '-'}</span></td>
-                    <td>${createExpandableText(contract.objeto)}</td>
+                    <td><span class="object-text">${contract.objeto || '-'}</span></td>
                     <td><span class="date-cell">${formatDate(contract.dataVigenciaInicial)}</span></td>
                     <td><span class="date-cell">${formatDate(contract.dataVigenciaFinal)}</span></td>
                     <td><span class="value-cell">${formatCurrency(contract.valorGlobal)}</span></td>
