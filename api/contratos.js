@@ -1,7 +1,5 @@
 export default async function handler(req, res) {
-  const pagina = req.query.pagina || 1;
-
-  const url = `https://dadosabertos.compras.gov.br/modulo-contratos/1_consultarContratos?pagina=${pagina}&tamanhoPagina=10&codigoUnidadeGestora=100001&dataVigenciaInicialMin=2025-01-01&dataVigenciaInicialMax=2025-12-31`;
+  const url = `https://dadosabertos.compras.gov.br/modulo-contratos/1_consultarContratos?codigoUnidadeGestora=100001&dataVigenciaInicialMin=2025-01-01&dataVigenciaInicialMax=2025-12-31`;
 
   try {
     const response = await fetch(url, {
