@@ -538,7 +538,7 @@
                 showLoading();
                 
                 const response = await fetch(
-                    `https://dadosabertos.compras.gov.br/modulo-contratos/1_consultarContratos?pagina=${page}&tamanhoPagina=10&codigoUnidadeGestora=100001&dataVigenciaInicialMin=2025-01-01&dataVigenciaInicialMax=2025-08-05`,
+                    `/api/contratos?pagina=${page}&tamanhoPagina=10`,
                     {
                         headers: {
                             'Accept': 'application/json',
