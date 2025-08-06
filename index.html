@@ -207,6 +207,21 @@
             font-size: 0.75rem;
             line-height: 1.2;
             vertical-align: top;
+            cursor: pointer; /* Adicionado para indicar que é clicável */
+            position: relative;
+        }
+
+        .contracts-table th .sort-icon {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.6em;
+            color: #9ca3af;
+        }
+
+        .contracts-table th.sorted .sort-icon {
+            color: #3b82f6;
         }
 
         .contracts-table td {
@@ -246,7 +261,6 @@
             overflow-wrap: break-word;
             hyphens: auto;
             line-height: 1.4;
-            /* Removido max-height, overflow: hidden, -webkit-line-clamp */
         }
 
         .cnpj, .process-number, .date-cell, .value-cell {
@@ -395,6 +409,99 @@
             color: #6b7280;
         }
 
+        /* Advanced Filters and Export Button */
+        .filter-export-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 120px;
+        }
+
+        .filter-group label {
+            font-size: 0.75rem;
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input[type="number"] {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .filter-group select:focus,
+        .filter-group input[type="number"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .filter-group input[type="number"] {
+            width: 100px; /* Ajuste para campos de valor */
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto; /* Empurra os botões para a direita */
+        }
+
+        .filter-buttons button,
+        .export-button {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-buttons button.apply {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .filter-buttons button.apply:hover {
+            background: #2563eb;
+        }
+
+        .filter-buttons button.clear {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .filter-buttons button.clear:hover {
+            background: #d1d5db;
+        }
+
+        .export-button {
+            background: #10b981;
+            color: white;
+        }
+
+        .export-button:hover {
+            background: #059669;
+        }
+
         /* Responsividade melhorada */
         @media (max-width: 1200px) {
             .contracts-table th,
@@ -422,6 +529,21 @@
             .stat-info p {
                 font-size: 1rem;
             }
+
+            .filter-export-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-buttons {
+                margin-left: 0;
+                justify-content: stretch;
+            }
+
+            .filter-buttons button, .export-button {
+                flex: 1;
+                justify-content: center;
+            }
         }
 
         /* Melhorias para impressão */
@@ -431,7 +553,7 @@
                 font-size: 10px;
             }
             
-            .header, .pagination, .success-badge {
+            .header, .pagination, .success-badge, .filter-export-controls {
                 display: none;
             }
             
@@ -483,6 +605,41 @@
             <span id="statusText">Conectado à API via Vercel - Carregando todos os contratos...</span>
         </div>
 
+        <!-- Advanced Filters and Export -->
+        <div class="filter-export-controls">
+            <div class="filter-group">
+                <label for="modalityFilter">Modalidade:</label>
+                <select id="modalityFilter">
+                    <option value="all">Todas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">Categoria:</label>
+                <select id="categoryFilter">
+                    <option value="all">Todas</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="minValueFilter">Valor Mínimo:</label>
+                <input type="number" id="minValueFilter" placeholder="R$ 0">
+            </div>
+            <div class="filter-group">
+                <label for="maxValueFilter">Valor Máximo:</label>
+                <input type="number" id="maxValueFilter" placeholder="R$ 99999999">
+            </div>
+            <div class="filter-buttons">
+                <button class="apply" onclick="applyFilters()">
+                    <i class="fas fa-filter"></i> Aplicar Filtros
+                </button>
+                <button class="clear" onclick="clearFilters()">
+                    <i class="fas fa-times"></i> Limpar Filtros
+                </button>
+            </div>
+            <button class="export-button" onclick="exportToCsv()">
+                <i class="fas fa-file-csv"></i> Exportar CSV (Página Atual)
+            </button>
+        </div>
+
         <div class="stats-grid" id="statsGrid">
             <div class="stat-card">
                 <div class="stat-icon contracts">
@@ -530,18 +687,18 @@
                 <table>
                     <thead>
                         <tr>
-                            <th class="col-contract">Número do Contrato</th>
-                            <th class="col-purchase">Número da Compra</th>
-                            <th class="col-modality">Modalidade</th>
-                            <th class="col-category">Categoria</th>
-                            <th class="col-unit">Unidade Requisitante</th>
-                            <th class="col-cnpj">CNPJ do Fornecedor</th>
-                            <th class="col-supplier">Fornecedor</th>
-                            <th class="col-process">Número do PA SEI</th>
-                            <th class="col-object">Objeto</th>
-                            <th class="col-start-date">Vigência Inicial</th>
-                            <th class="col-end-date">Vigência Final</th>
-                            <th class="col-value">Valor Atual do Contrato</th>
+                            <th class="col-contract" data-sort-key="numeroContrato">Número do Contrato <span class="sort-icon"></span></th>
+                            <th class="col-purchase" data-sort-key="numeroCompra">Número da Compra <span class="sort-icon"></span></th>
+                            <th class="col-modality" data-sort-key="nomeModalidadeCompra">Modalidade <span class="sort-icon"></span></th>
+                            <th class="col-category" data-sort-key="nomeCategoria">Categoria <span class="sort-icon"></span></th>
+                            <th class="col-unit" data-sort-key="unidadesRequisitantes">Unidade Requisitante <span class="sort-icon"></span></th>
+                            <th class="col-cnpj" data-sort-key="niFornecedor">CNPJ do Fornecedor <span class="sort-icon"></span></th>
+                            <th class="col-supplier" data-sort-key="nomeRazaoSocialFornecedor">Fornecedor <span class="sort-icon"></span></th>
+                            <th class="col-process" data-sort-key="processo">Número do PA SEI <span class="sort-icon"></span></th>
+                            <th class="col-object" data-sort-key="objeto">Objeto <span class="sort-icon"></span></th>
+                            <th class="col-start-date" data-sort-key="dataVigenciaInicial">Vigência Inicial <span class="sort-icon"></span></th>
+                            <th class="col-end-date" data-sort-key="dataVigenciaFinal">Vigência Final <span class="sort-icon"></span></th>
+                            <th class="col-value" data-sort-key="valorGlobal">Valor Atual do Contrato <span class="sort-icon"></span></th>
                         </tr>
                     </thead>
                     <tbody id="contractsTableBody">
@@ -584,6 +741,8 @@
         let itemsPerPage = 25;
         let totalPages = 0;
         let searchTerm = '';
+        let currentSortColumn = null;
+        let currentSortDirection = 'asc'; // 'asc' or 'desc'
 
         // Elementos DOM
         const searchInput = document.getElementById('searchInput');
@@ -600,11 +759,25 @@
         const uniqueSuppliersEl = document.getElementById('uniqueSuppliers');
         const errorMessage = document.getElementById('errorMessage');
 
+        // Filter elements
+        const modalityFilterSelect = document.getElementById('modalityFilter');
+        const categoryFilterSelect = document.getElementById('categoryFilter');
+        const minValueFilterInput = document.getElementById('minValueFilter');
+        const maxValueFilterInput = document.getElementById('maxValueFilter');
+
         // Event Listeners
         searchInput.addEventListener('input', (e) => {
             searchTerm = e.target.value.toLowerCase();
             currentPage = 1;
             filterContracts();
+        });
+
+        // Add event listeners for sorting
+        document.querySelectorAll('.contracts-table th[data-sort-key]').forEach(header => {
+            header.addEventListener('click', () => {
+                const sortKey = header.dataset.sortKey;
+                sortContracts(sortKey);
+            });
         });
 
         // Funções utilitárias
@@ -617,7 +790,11 @@
 
         function formatDate(dateString) {
             if (!dateString) return '-';
-            return new Date(dateString).toLocaleDateString('pt-BR');
+            try {
+                return new Date(dateString).toLocaleDateString('pt-BR');
+            } catch {
+                return dateString; // Fallback for invalid date strings
+            }
         }
 
         function formatCNPJ(cnpj) {
@@ -665,8 +842,7 @@
                 }
                 
                 allContracts = allData;
-                statusText.textContent = `Conectado à API via Vercel - ${allContracts.length} contratos carregados`;
-                
+                populateFilterOptions(); // Populate filters after loading all data
                 filterContracts();
                 updateStats();
                 hideLoading();
@@ -677,12 +853,40 @@
             }
         }
 
+        // Populate filter dropdowns
+        function populateFilterOptions() {
+            const modalities = new Set(allContracts.map(c => c.nomeModalidadeCompra).filter(Boolean));
+            modalityFilterSelect.innerHTML = '<option value="all">Todas</option>' + 
+                Array.from(modalities).sort().map(m => `<option value="${m}">${m}</option>`).join('');
+
+            const categories = new Set(allContracts.map(c => c.nomeCategoria).filter(Boolean));
+            categoryFilterSelect.innerHTML = '<option value="all">Todas</option>' +
+                Array.from(categories).sort().map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+
+        // Apply advanced filters
+        function applyFilters() {
+            currentPage = 1;
+            filterContracts();
+        }
+
+        // Clear advanced filters
+        function clearFilters() {
+            modalityFilterSelect.value = 'all';
+            categoryFilterSelect.value = 'all';
+            minValueFilterInput.value = '';
+            maxValueFilterInput.value = '';
+            currentPage = 1;
+            filterContracts();
+        }
+
         // Filtrar contratos
         function filterContracts() {
-            if (!searchTerm) {
-                filteredContracts = [...allContracts];
-            } else {
-                filteredContracts = allContracts.filter(contract => 
+            let tempFiltered = [...allContracts];
+
+            // Search term filter
+            if (searchTerm) {
+                tempFiltered = tempFiltered.filter(contract => 
                     (contract.nomeRazaoSocialFornecedor || '').toLowerCase().includes(searchTerm) ||
                     (contract.numeroContrato || '').toLowerCase().includes(searchTerm) ||
                     (contract.objeto || '').toLowerCase().includes(searchTerm) ||
@@ -691,11 +895,97 @@
                     (contract.unidadesRequisitantes || '').toLowerCase().includes(searchTerm)
                 );
             }
+
+            // Modality filter
+            const selectedModality = modalityFilterSelect.value;
+            if (selectedModality !== 'all') {
+                tempFiltered = tempFiltered.filter(contract => contract.nomeModalidadeCompra === selectedModality);
+            }
+
+            // Category filter
+            const selectedCategory = categoryFilterSelect.value;
+            if (selectedCategory !== 'all') {
+                tempFiltered = tempFiltered.filter(contract => contract.nomeCategoria === selectedCategory);
+            }
+
+            // Value range filter
+            const minValue = parseFloat(minValueFilterInput.value);
+            const maxValue = parseFloat(maxValueFilterInput.value);
+
+            if (!isNaN(minValue)) {
+                tempFiltered = tempFiltered.filter(contract => (contract.valorGlobal || 0) >= minValue);
+            }
+            if (!isNaN(maxValue)) {
+                tempFiltered = tempFiltered.filter(contract => (contract.valorGlobal || 0) <= maxValue);
+            }
+
+            filteredContracts = tempFiltered;
             
+            // Apply sorting after filtering
+            if (currentSortColumn) {
+                sortContracts(currentSortColumn, true); // true to re-sort without changing direction
+            } else {
+                totalPages = Math.ceil(filteredContracts.length / itemsPerPage);
+                renderContracts();
+                updatePagination();
+                updateStats();
+            }
+        }
+
+        // Sort contracts
+        function sortContracts(columnKey, keepDirection = false) {
+            if (!keepDirection) {
+                if (currentSortColumn === columnKey) {
+                    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSortColumn = columnKey;
+                    currentSortDirection = 'asc';
+                }
+            }
+
+            filteredContracts.sort((a, b) => {
+                const valA = a[columnKey];
+                const valB = b[columnKey];
+
+                if (typeof valA === 'string' && typeof valB === 'string') {
+                    return currentSortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                }
+                // Handle numbers and dates
+                if (columnKey.includes('dataVigencia')) {
+                    const dateA = new Date(valA);
+                    const dateB = new Date(valB);
+                    return currentSortDirection === 'asc' ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+                }
+                return currentSortDirection === 'asc' ? valA - valB : valB - valA;
+            });
+
             totalPages = Math.ceil(filteredContracts.length / itemsPerPage);
             renderContracts();
             updatePagination();
             updateStats();
+            updateSortIcons();
+        }
+
+        // Update sort icons in table headers
+        function updateSortIcons() {
+            document.querySelectorAll('.contracts-table th').forEach(header => {
+                header.classList.remove('sorted');
+                const sortIcon = header.querySelector('.sort-icon');
+                if (sortIcon) {
+                    sortIcon.innerHTML = ''; // Clear previous icon
+                }
+            });
+
+            if (currentSortColumn) {
+                const activeHeader = document.querySelector(`.contracts-table th[data-sort-key="${currentSortColumn}"]`);
+                if (activeHeader) {
+                    activeHeader.classList.add('sorted');
+                    const sortIcon = activeHeader.querySelector('.sort-icon');
+                    if (sortIcon) {
+                        sortIcon.innerHTML = currentSortDirection === 'asc' ? ' &#9650;' : ' &#9660;'; // Up or Down arrow
+                    }
+                }
+            }
         }
 
         // Renderizar contratos na tabela
@@ -737,6 +1027,40 @@
             document.getElementById('showingFrom').textContent = showingFrom;
             document.getElementById('showingTo').textContent = showingTo;
             document.getElementById('totalItems').textContent = filteredContracts.length;
+        }
+
+        // Export to CSV (current page only)
+        function exportToCsv() {
+            const headers = Array.from(document.querySelectorAll('.contracts-table th'))
+                               .map(th => th.textContent.trim().replace(/ \u25B2| \u25BC/g, '')); // Remove sort icons
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageContractsToExport = filteredContracts.slice(startIndex, endIndex);
+
+            const rows = pageContractsToExport.map(contract => [
+                `"${(contract.numeroContrato || '-').replace(/"/g, '""')}"`,
+                `"${(contract.numeroCompra || '-').replace(/"/g, '""')}"`,
+                `"${(contract.nomeModalidadeCompra || '-').replace(/"/g, '""')}"`,
+                `"${(contract.nomeCategoria || '-').replace(/"/g, '""')}"`,
+                `"${(contract.unidadesRequisitantes || '-').replace(/"/g, '""')}"`,
+                `"${formatCNPJ(contract.niFornecedor).replace(/"/g, '""')}"`,
+                `"${(contract.nomeRazaoSocialFornecedor || '-').replace(/"/g, '""')}"`,
+                `"${(contract.processo || '-').replace(/"/g, '""')}"`,
+                `"${(contract.objeto || '-').replace(/"/g, '""')}"`,
+                `"${formatDate(contract.dataVigenciaInicial).replace(/"/g, '""')}"`,
+                `"${formatDate(contract.dataVigenciaFinal).replace(/"/g, '""')}"`,
+                `"${formatCurrency(contract.valorGlobal).replace(/"/g, '""')}"`
+            ].join(';')); // Use semicolon as separator for Brazilian CSVs
+
+            const csvContent = [headers.join(';'), ...rows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `contratos_pagina_${currentPage}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // Atualizar estatísticas
