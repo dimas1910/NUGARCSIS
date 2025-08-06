@@ -1,146 +1,120 @@
-// DOM Elements
-const pdf1UploadInput = document.getElementById('pdf1Upload');
-const pdf2UploadInput = document.getElementById('pdf2Upload');
-const registerButton = document.getElementById('registerButton');
-const clearButton = document.getElementById('clearButton');
-const statusMessageDiv = document.getElementById('statusMessage');
-const extractedResultsDiv = document.getElementById('extractedResults');
-const comparisonResultsDiv = document.getElementById('comparisonResults');
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registros de Doação - NUGARCSYS</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/globals.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Doação</h1>
+        <p style="text-align: center; margin-bottom: 1.5rem; color: #6b7280;">
+            Faça o upload dos PDFs do Termo de Doação e do PDF de Comparação para análise.
+            <br />
+            <strong style="color: #ef4444;">A extração de texto de PDFs agora é feita no backend.</strong>
+        </p>
 
-// Extracted Data Display Elements
-const doacaoNumeroTermo = document.getElementById('doacaoNumeroTermo');
-const doacaoNomeDonataria = document.getElementById('doacaoNomeDonataria');
-const doacaoCnpjDonataria = document.getElementById('doacaoCnpjDonataria');
-const doacaoEmailDonataria = document.getElementById('doacaoEmailDonataria');
-const doacaoPaSei = document.getElementById('doacaoPaSei');
-const doacaoObjeto = document.getElementById('doacaoObjeto');
-const doacaoSetorResponsavel = document.getElementById('doacaoSetorResponsavel');
-const doacaoTempoVigencia = document.getElementById('doacaoTempoVigencia');
-const doacaoValorTotal = document.getElementById('doacaoValorTotal');
-const doacaoDataAssinatura = document.getElementById('doacaoDataAssinatura');
-const doacaoDataFinalVigencia = document.getElementById('doacaoDataFinalVigencia');
+        <div class="form-group">
+            <label for="pdf1Upload">Upload do PDF do Termo de Doação:</label>
+            <input
+                type="file"
+                id="pdf1Upload"
+                accept=".pdf"
+            />
+        </div>
 
-// Comparison Data Display Elements
-const compObjetoDoacao = document.getElementById('compObjetoDoacao');
-const compObjetoComparacao = document.getElementById('compObjetoComparacao');
-const compObjetoStatus = document.getElementById('compObjetoStatus');
-const compNumeroDoacao = document.getElementById('compNumeroDoacao');
-const compNumeroComparacao = document.getElementById('compNumeroComparacao');
-const compNumeroStatus = document.getElementById('compNumeroStatus');
-const compNomeDoacao = document.getElementById('compNomeDoacao');
-const compNomeComparacao = document.getElementById('compNomeComparacao');
-const compNomeStatus = document.getElementById('compNomeStatus');
-const compPaDoacao = document.getElementById('compPaDoacao');
-const compPaComparacao = document.getElementById('compPaComparacao');
-const compPaStatus = document.getElementById('compPaStatus');
-const compSetorDoacao = document.getElementById('compSetorDoacao');
-const compSetorComparacao = document.getElementById('compSetorComparacao');
-const compSetorStatus = document.getElementById('compSetorStatus');
-const compValorDoacao = document.getElementById('compValorDoacao');
-const compValorComparacao = document.getElementById('compValorComparacao');
-const compValorStatus = document.getElementById('compValorStatus');
+        <div class="form-group">
+            <label for="pdf2Upload">Upload do PDF de Comparação:</label>
+            <input
+                type="file"
+                id="pdf2Upload"
+                accept=".pdf"
+            />
+        </div>
 
-// Helper to display status messages
-function showStatus(message, type) {
-    statusMessageDiv.textContent = message;
-    statusMessageDiv.className = `status-message ${type}`;
-    statusMessageDiv.style.display = 'block';
-}
+        <div class="button-group">
+            <button class="primary" id="registerButton">
+                <i class="fas fa-upload"></i> Registrar e Comparar
+            </button>
+            <button class="secondary" id="clearButton">
+                <i class="fas fa-times"></i> Limpar
+            </button>
+        </div>
 
-function hideStatus() {
-    statusMessageDiv.style.display = 'none';
-}
+        <div id="statusMessage" class="status-message" style="display: none;"></div>
 
-// Function to update the UI with extracted data
-function updateExtractedUI(data) {
-    doacaoNumeroTermo.textContent = data.numeroTermoDoacao;
-    doacaoNomeDonataria.textContent = data.nomeDonataria;
-    doacaoCnpjDonataria.textContent = data.cnpjDonataria;
-    doacaoEmailDonataria.textContent = data.emailDonataria;
-    doacaoPaSei.textContent = data.paSei;
-    doacaoObjeto.textContent = data.objetoTermo;
-    doacaoSetorResponsavel.textContent = data.setorResponsavel;
-    doacaoTempoVigencia.textContent = data.tempoVigencia;
-    doacaoValorTotal.textContent = data.valorTotalObjetos;
-    doacaoDataAssinatura.textContent = data.dataAssinatura;
-    doacaoDataFinalVigencia.textContent = data.dataFinalVigencia;
-    extractedResultsDiv.style.display = 'block';
-}
+        <div id="extractedResults" class="results-section" style="display: none;">
+            <h2>Informações Extraídas do Termo de Doação</h2>
+            <div class="result-card">
+                <div class="result-item"><strong>Número do Termo de Doação:</strong> <span id="doacaoNumeroTermo">-</span></div>
+                <div class="result-item"><strong>Nome da Donatária:</strong> <span id="doacaoNomeDonataria">-</span></div>
+                <div class="result-item"><strong>CNPJ da Donatária:</strong> <span id="doacaoCnpjDonataria">-</span></div>
+                <div class="result-item"><strong>E-mail da Donatária:</strong> <span id="doacaoEmailDonataria">-</span></div>
+                <div class="result-item"><strong>Número do PA SEI:</strong> <span id="doacaoPaSei">-</span></div>
+                <div class="result-item"><strong>Descrição do Objeto:</strong> <span id="doacaoObjeto">-</span></div>
+                <div class="result-item"><strong>Setor Responsável:</strong> <span id="doacaoSetorResponsavel">-</span></div>
+                <div class="result-item"><strong>Tempo de Vigência:</strong> <span id="doacaoTempoVigencia">-</span></div>
+                <div class="result-item"><strong>Valor Total dos Objetos:</strong> <span id="doacaoValorTotal">-</span></div>
+                <div class="result-item"><strong>Data da Assinatura:</strong> <span id="doacaoDataAssinatura">-</span></div>
+                <div class="result-item"><strong>Data Final de Vigência:</strong> <span id="doacaoDataFinalVigencia">-</span></div>
+            </div>
+        </div>
 
-// Function to update the UI with comparison results
-function updateComparisonUI(results) {
-    const updateRow = (elementId, doacaoVal, compVal, status) => {
-        document.getElementById(`${elementId}Doacao`).textContent = doacaoVal;
-        document.getElementById(`${elementId}Comparacao`).textContent = compVal;
-        const statusCell = document.getElementById(`${elementId}Status`);
-        statusCell.textContent = status === 'match' ? '✅ OK' : (status === 'mismatch' ? '❌ Divergente' : '❓ Ausente');
-        statusCell.className = statusCell.className.replace(/match|mismatch|missing/g, ''); // Clear previous classes
-        statusCell.classList.add(status);
-    };
+        <div id="comparisonResults" class="comparison-section" style="display: none;">
+            <h2>Comparação com o PDF de Comparação</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Termo de Doação</th>
+                        <th>PDF de Comparação</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Descrição do Objeto</td>
+                        <td id="compObjetoDoacao">-</td>
+                        <td id="compObjetoComparacao">-</td>
+                        <td id="compObjetoStatus">-</td>
+                    </tr>
+                    <tr>
+                        <td>Número do Termo/Instrumento</td>
+                        <td id="compNumeroDoacao">-</td>
+                        <td id="compNumeroComparacao">-</td>
+                        <td id="compNumeroStatus">-</td>
+                    </tr>
+                    <tr>
+                        <td>Nome da Donatária/Fornecedor</td>
+                        <td id="compNomeDoacao">-</td>
+                        <td id="compNomeComparacao">-</td>
+                        <td id="compNomeStatus">-</td>
+                    </tr>
+                    <tr>
+                        <td>Número do PA SEI/PA</td>
+                        <td id="compPaDoacao">-</td>
+                        <td id="compPaComparacao">-</td>
+                        <td id="compPaStatus">-</td>
+                    </tr>
+                    <tr>
+                        <td>Setor Responsável/Órgão Fiscalizador</td>
+                        <td id="compSetorDoacao">-</td>
+                        <td id="compSetorComparacao">-</td>
+                        <td id="compSetorStatus">-</td>
+                    </tr>
+                    <tr>
+                        <td>Valor Total dos Objetos/Outros Valores</td>
+                        <td id="compValorDoacao">-</td>
+                        <td id="compValorComparacao">-</td>
+                        <td id="compValorStatus">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    updateRow('compObjeto', results.objeto.doacao, results.objeto.comparacao, results.objeto.status);
-    updateRow('compNumero', results.numero.doacao, results.numero.comparacao, results.numero.status);
-    updateRow('compNome', results.nome.doacao, results.nome.comparacao, results.nome.status);
-    updateRow('compPa', results.pa.doacao, results.pa.comparacao, results.pa.status);
-    updateRow('compSetor', results.setor.doacao, results.setor.comparacao, results.setor.status);
-    updateRow('compValor', results.valor.doacao, results.valor.comparacao, results.valor.status);
-
-    comparisonResultsDiv.style.display = 'block';
-}
-
-// Event Listener for Register Button
-registerButton.addEventListener('click', async () => {
-    hideStatus();
-    extractedResultsDiv.style.display = 'none';
-    comparisonResultsDiv.style.display = 'none';
-
-    const pdf1File = pdf1UploadInput.files ? pdf1UploadInput.files[0] : null;
-    const pdf2File = pdf2UploadInput.files ? pdf2UploadInput.files[0] : null;
-
-    if (!pdf1File || !pdf2File) {
-        showStatus('Por favor, selecione ambos os arquivos PDF.', 'error');
-        return;
-    }
-
-    registerButton.disabled = true;
-    clearButton.disabled = true;
-    registerButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
-
-    try {
-        const formData = new FormData();
-        formData.append('pdf1', pdf1File);
-        formData.append('pdf2', pdf2File);
-
-        const response = await fetch('/api/extract-pdf', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Erro HTTP: ${response.status}`);
-        }
-
-        const data = await response.json();
-        updateExtractedUI(data.extractedDoacao);
-        updateComparisonUI(data.comparisonResults);
-        showStatus('Extração e comparação concluídas com sucesso!', 'success');
-
-    } catch (e) {
-        console.error("Erro durante o processamento de PDFs:", e);
-        showStatus(`Ocorreu um erro: ${e.message}.`, 'error');
-    } finally {
-        registerButton.disabled = false;
-        clearButton.disabled = false;
-        registerButton.innerHTML = '<i class="fas fa-upload"></i> Registrar e Comparar';
-    }
-});
-
-// Event Listener for Clear Button
-clearButton.addEventListener('click', () => {
-    pdf1UploadInput.value = '';
-    pdf2UploadInput.value = '';
-    hideStatus();
-    extractedResultsDiv.style.display = 'none';
-    comparisonResultsDiv.style.display = 'none';
-});
+    <script src="/js/doacao.js"></script>
+</body>
+</html>
