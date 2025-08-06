@@ -1,7 +1,9 @@
-export default async function handler(req, res) {
-  const { pagina = 1 } = req.query;
+// api/contratos.js
 
-  const url = `https://dadosabertos.compras.gov.br/modulo-contratos/1_consultarContratos?pagina=${pagina}&tamanhoPagina=10&codigoUnidadeGestora=100001&dataVigenciaInicialMin=2025-01-01&dataVigenciaInicialMax=2025-08-05`;
+export default async function handler(req, res) {
+  const pagina = req.query.pagina || 1;
+
+  const url = `https://dadosabertos.compras.gov.br/modulo-contratos/1_consultarContratos?pagina=${pagina}&tamanhoPagina=10&codigoUnidadeGestora=100001&dataVigenciaInicialMin=2025-01-01&dataVigenciaInicialMax=2025-12-31`;
 
   try {
     const response = await fetch(url, {
@@ -13,8 +15,12 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    res.setHeader('Access-Control-Allow-Origin', '*'); // liberar CORS
-    res.status(200).json(data);
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // ⬇️ Aqui está o ponto crítico: repassando só o array de contratos
+    res.status(200).json(data.resultado);
+
   } catch (err) {
     console.error('Erro ao buscar contratos:', err);
     res.status(500).json({ error: 'Erro interno do servidor' });
